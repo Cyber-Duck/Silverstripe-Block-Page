@@ -1,0 +1,24 @@
+{
+    "name": "cyber-duck/silverstripe-block-page",
+    "description": "A modular approach to building pages in SilverStripe",
+    "type": "silverstripe-module",
+    "homepage": "http://github.com/cyber-duck/silverstripe-block-page",
+    "keywords": [
+        "silverstripe",
+        "page"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Andrew Mc Cormack",
+            "email": "andrewm@cyber-duck.co.uk"
+        }
+    ],
+    "support": {
+        "issues": "http://github.com/cyber-duck/silverstripe-block-page/issues"
+    },
+    "extra": {
+        "installer-name": "block-page"
+    },
+    "prefer-stable": true
+}
