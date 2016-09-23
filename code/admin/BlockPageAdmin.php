@@ -4,7 +4,7 @@ class BlockPageAdmin extends ModelAdmin {
 
     //private static $menu_priority = 100;
 
-    private static $managed_models = array('BlockPage');
+    private static $managed_models = array('ContentBlock');
 
     private static $url_segment = 'blockpage-admin';
 
@@ -15,6 +15,17 @@ class BlockPageAdmin extends ModelAdmin {
     public function getEditForm($id = null, $fields = null)
     {
         $form = parent::getEditForm($id, $fields);
+
+        $types = Config::inst()->get('BlockPage', 'blocks');
+
+        Config::inst()->update('BlockPageAdmin', 'managed_models', $types);
+
+        $form
+            ->Fields()
+            ->fieldByName($this->sanitiseClassName($this->modelClass))
+            ->getConfig()
+            ->getComponentByType('GridFieldDetailForm')
+            ->setItemRequestClass('CreateBlock_ItemRequest');
 
         return $form;
     }

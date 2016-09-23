@@ -43,12 +43,12 @@ class BlockPage_Extension extends DataExtension
      **/
     public function updateCMSFields(FieldList $fields) 
     {   
-        $fields->addFieldToTab('Root.ContentBlocks', $grid);
-
         $blocks = $this->owner->ContentBlocks();
-        $editor = GridFieldConfig_RelationEditor::create()->addComponent(new GridFieldSortableRows('BlockSort'))
+        $editor = GridFieldConfig_RelationEditor::create()->addComponent(new GridFieldSortableRows('BlockSort'));
         $grid = new GridField('ContentBlocks', 'Content Blocks', $blocks, $editor);
         $fields->addFieldToTab('Root.ContentBlocks', $grid);
+
+        $fields = new FieldList();
 
         return $fields;
     }
