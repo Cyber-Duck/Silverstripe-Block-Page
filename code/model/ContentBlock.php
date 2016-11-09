@@ -1,26 +1,24 @@
 <?php
 
-/**
- * 
- *
- * @package silverstripe-block-page
- * @license MIT License https://github.com/cyber-duck/silverstripe-block-page/blob/master/LICENSE
- * @author  <andrewm@cyber-duck.co.uk>
- **/
-
 class ContentBlock extends DataObject
 {
-	private static $db = array(
+	private static $db = [
 		'Name'        => 'Varchar(512)',
         'CssSelector' => 'Varchar(512)',
-	);
+        'BlockType'   => 'Varchar(30)',
+        'BlockSort'   => 'Int'
+	];
 
-	private static $summary_fields = array(
+	private static $summary_fields = [
 		'ID'          => 'ID',
 		'Name'        => 'Name',
 		'ClassName'   => 'Type',
 		'CssSelector' => 'CSS Style'
-	);
+	];
+
+	private static $has_one = [
+		'Page' => 'Page'
+	];
 
 	public function getCMSActions()
 	{
@@ -37,41 +35,63 @@ class ContentBlock extends DataObject
 
     public function getCMSValidator()
     {
-        $request = Controller::curr()->getRequest();
-
-        $required = array('BlockStage', 'BlockType');
-
-    	if($request->postVar('BlockStage') == 'form') {
-    		$required[] = 'Name';
-    		$required[] = 'CssSelector';
-    	}
-		return new RequiredFields($required);
+    	return new RequiredFields([]);
     }
 
     public function getCMSFields()
     {
-        $fields = parent::getCMSFields();
-        $request = Controller::curr()->getRequest();
+    	$fields = parent::getCMSFields();
 
-        $fields->addFieldsToTab('Root.Main', new FieldList(
-			TextField::create('Name'),
-			DropdownField::create('CssSelector', 'CSS Style', array('a' => 'style 1')),
-			HiddenField::create('BlockType')->setValue($request->postVar('BlockType')),
-			HiddenField::create('BlockStage')->setValue('form')
-		));
+        if($this->getAction() == 'new') {
+            return $this->getBlockSelectionFields($fields);
+        }
         return $fields;
     }
 
-    public function getSelectionCMSFields()
+    private function getAction()
     {
-		$fields = new FieldList();
+        $path = explode('/', Controller::curr()->getRequest()->getURL());
 
-        $tabs = new TabSet('Root',
-			new Tab('Main', 'Main')
+        return array_pop($path);
+    }
+
+    public function getBlockSelectionFields(FieldList $fields)
+    {
+    	$remove = $fields->dataFields();
+
+        foreach($remove as $field) {
+        	if($field->Name != 'PageID') {
+            	$fields->removeByName($field->Name);
+        	}
+        }
+        $tabs = TabSet::create('Root',
+			TabSet::create('Main', 'Main')
 		);
 		$fields->push($tabs);
 
+		$fields->addFieldsToTab('Root.Main', [
+			LiteralField::create(false, '<div id="PageType">'),
+			HeaderField::create('Blocks'),
+			OptionsetField::create('BlockType', $this->getBlockSelectionLabel(), $this->getBlockSelectionOptions())
+				->setCustomValidationMessage('Please select a block type'),
+			LiteralField::create(false, '</div">'),
+			HiddenField::create('BlockStage')->setValue('choose')
+		]);
+        return $fields;
+    }
+
+    private function getBlockSelectionLabel()
+    {
+    	$label = '<span class="step-label"><span class="flyout">%d</span><span class="arrow"></span><span class="title">%s</span></span>';
+        
+        return sprintf($label, 1, 'Add content block');
+    }
+
+    private function getBlockSelectionOptions()
+    {
     	$types = Config::inst()->get('BlockPage', 'blocks');
+
+    	$options = [];
 
         foreach($types as $type) {
 			$html = sprintf('<span class="page-icon class-%s"></span><strong class="title">%s</strong><span class="description">%s</span>',
@@ -81,17 +101,6 @@ class ContentBlock extends DataObject
 			);
 			$options[$type] = DBField::create_field('HTMLText', $html);
         }
-
-        $step = '<span class="step-label"><span class="flyout">%d</span><span class="arrow"></span><span class="title">%s</span></span>';
-        $label = sprintf($step, 1, 'Add block page');
-
-		$fields->addFieldsToTab('Root.Main', new FieldList(
-			LiteralField::create(false, '<div id="PageType">'),
-			HeaderField::create('Blocks'),
-			OptionsetField::create('BlockType', $label, $options)->setCustomValidationMessage('Please select a block type'),
-			LiteralField::create(false, '</div">'),
-			HiddenField::create('BlockStage')->setValue('select')
-		));
-        return $fields;
+        return $options;
     }
 }

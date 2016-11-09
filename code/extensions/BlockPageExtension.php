@@ -1,12 +1,17 @@
 <?php
 
-class BlockPage_Extension extends DataExtension
+class BlockPageExtension extends DataExtension
 {
     private static $has_many = [
         'ContentBlocks' => 'ContentBlock'
     ];
 
     private static $summary_fields = [];
+
+    public function IncludeBlock($class, $id)
+    {   
+        return DataObject::get_by_id($class, $id)->renderWith($class);
+    }
 
     public function updateCMSFields(FieldList $fields) 
     {   

@@ -2,58 +2,56 @@
 
 class CreateBlock_ItemRequest extends GridFieldDetailForm_ItemRequest
 {
-    private static $allowed_actions = array('ItemEditForm', 'doBlock');
+    private static $allowed_actions = ['ItemEditForm', 'doCreateBlock'];
 
     public function ItemEditForm()
     {
         $form = parent::ItemEditForm();
-        $request = Controller::curr()->getRequest();
+        $actions = $form->Actions();
 
-        $class = $request->postVar('BlockType');
-        $stage = $request->postVar('BlockStage');
+        $form = new Form(
+            $this,
+            'ItemEditForm',
+            $this->record->getCMSFields(),
+            $actions,
+            $this->component->getValidator()
+        );
+        $form->loadDataFrom($this->record);
 
-        if($request->param('ID') == 'new') {
-            if($class == null) {
-                $form->addExtraClass('cms-add-form stacked cms-content center cms-edit-form');
-                $form->setFields(ContentBlock::create()->getSelectionCMSFields());
-            } else {
-                $form->setFields($class::create()->getCMSFields());
-            }
-            $actions = $form->Actions();
-
+        if($this->getAction() == 'edit') {
+            $form->addExtraClass('cms-content cms-edit-form center cms-content-fields');
+        }
+        if($this->getAction() == 'new') {
             $actions->removeByName('action_doSave');
-
-            $button = FormAction::create('doBlock');
+            $button = FormAction::create('doCreateBlock');
             $button->setTitle('Create')
                 ->setAttribute('data-icon', 'accept')
                 ->setAttribute('data-icon-alternate', 'addpage')
                 ->setAttribute('data-text-alternate', 'Clean-up now');
             $actions->unshift($button);
 
-            $form->setActions($actions);
+            $form->addExtraClass('cms-content-fields');
         }
         return $form;
     }
-    
-    public function doBlock($data, $form)
+
+    public function doCreateBlock($data, $form)
     {
-        $class = $data['BlockType'];
-        $controller = Controller::curr();
+        $request = Controller::curr()->getRequest();
 
-        $class = $class::create();
+        $class = $request->postVar('BlockType');
 
-        $form->saveInto($class);
-        $class->write();
+        $block = new $class();
+        $block->PageID = $request->postVar('PageID');
+        $block->write();
 
-        Session::set("FormInfo.Form_EditForm.formError.message", 'Successfully created block');
-        Session::set("FormInfo.Form_EditForm.formError.type", 'good');
+        return Controller::curr()->redirect(sprintf('/admin/pages/edit/EditForm/field/ContentBlocks/item/%s/edit', $block->ID));
+    }
 
-        $class->flushCache();
+    private function getAction()
+    {
+        $path = explode('/', Controller::curr()->getRequest()->getURL());
 
-        $controller->response->removeHeader('Location'); 
-        $noActionURL = $controller->removeAction($data['url']);
-        $controller->getRequest()->addHeader('X-Pjax', 'CurrentForm,Breadcrumbs');
-
-        $controller->redirect($noActionURL, 302);
+        return array_pop($path);
     }
 }
