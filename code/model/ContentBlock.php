@@ -42,6 +42,10 @@ class ContentBlock extends DataObject
     {
     	$fields = parent::getCMSFields();
 
+        $fields->push(HiddenField::create('PageID'));
+        $fields->push(HiddenField::create('BlockSort'));
+        $fields->push(HiddenField::create('BlockType'));
+
         if($this->getAction() == 'new') {
             return $this->getBlockSelectionFields($fields);
         }
@@ -75,7 +79,8 @@ class ContentBlock extends DataObject
 			OptionsetField::create('BlockType', $this->getBlockSelectionLabel(), $this->getBlockSelectionOptions())
 				->setCustomValidationMessage('Please select a block type'),
 			LiteralField::create(false, '</div">'),
-			HiddenField::create('BlockStage')->setValue('choose')
+			HiddenField::create('BlockStage')->setValue('choose'),
+            HiddenField::create('PageID')
 		]);
         return $fields;
     }

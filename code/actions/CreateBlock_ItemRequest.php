@@ -9,6 +9,18 @@ class CreateBlock_ItemRequest extends GridFieldDetailForm_ItemRequest
         $form = parent::ItemEditForm();
         $actions = $form->Actions();
 
+        $fields = $this->record->getCMSFields();
+        foreach($fields as $field) {
+            $field->setForm($form);
+        }
+        $form->fields()->removeByName('Name');
+        $form->fields()->removeByName('CssSelector');
+        $form->fields()->removeByName('BlockType');
+        $form->fields()->removeByName('BlockStage');
+        $form->fields()->removeByName('PageID');
+        $form->fields()->addFieldsToTab('Root.Main', $fields);
+        $form->loadDataFrom($this->record);
+/*
         $form = new Form(
             $this,
             'ItemEditForm',
@@ -17,6 +29,7 @@ class CreateBlock_ItemRequest extends GridFieldDetailForm_ItemRequest
             $this->component->getValidator()
         );
         $form->loadDataFrom($this->record);
+        */
 
         if($this->getAction() == 'edit') {
             $form->addExtraClass('cms-content cms-edit-form center cms-content-fields');
