@@ -5,6 +5,8 @@
     "homepage": "http://github.com/cyber-duck/silverstripe-block-page",
     "keywords": [
         "silverstripe",
+        "modular page",
+        "block page",
         "page"
     ],
     "license": "MIT",
@@ -18,7 +20,7 @@
         "issues": "http://github.com/cyber-duck/silverstripe-block-page/issues"
     },
     "extra": {
-        "installer-name": "block-page"
+        "installer-name": "silverstripe-block-page"
     },
     "prefer-stable": true
 }
