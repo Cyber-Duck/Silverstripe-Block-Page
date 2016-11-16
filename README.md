@@ -38,9 +38,9 @@ BlogPage:
 
 A block consists of 2 parts; a DataObject and a .ss template. Both these should have the same name.
 
-e.g 
-EditorBlock.php
-EditorBlock.ss
+e.g: 
+  - EditorBlock.php
+  - EditorBlock.ss
 
 ### The DataObject 
 
@@ -49,13 +49,13 @@ This should extends ContentBlock and should have title and description configura
 ```php
 class EditorBlock extends ContentBlock
 {
-	private static $title = 'Editor';
+    private static $title = 'Editor';
 
-	private static $description = 'Simple WYSIWYG editor block';
+    private static $description = 'Simple WYSIWYG editor block';
 
-	private static $db = [
-		'Text' => 'HTMLText'
-	];
+    private static $db = [
+        'Text' => 'HTMLText'
+    ];
 
     public function getCMSFields()
     {
@@ -72,7 +72,7 @@ All the DataObject properties will be available within your block template.
 
 ```
 <div>
-	$Text
+    $Text
 </div>
 ```
 
