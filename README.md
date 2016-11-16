@@ -1,6 +1,10 @@
-# Silverstripe Block Page
+# SilverStripe Block Page
 
-A modular approach to building pages in SilverStripe
+A modular approach to building pages in SilverStripe. Allows creation of pages in blocks allowing maximum flexibility for developers and CMS admins.
+  - Customize block fields easily like you would any other DataObject
+  - Use repeating block components and unlimited block variations to create infinite layout variations
+  - Use drag and drop GridField functionality to change and re-order blocks easily
+  - Tie in things like forms to blocks
 
 Author: [Andrew Mc Cormack](https://github.com/Andrew-Mc-Cormack)
 
@@ -40,7 +44,7 @@ EditorBlock.ss
 
 ### The DataObject 
 
-This should extends ContentBlock and should have title and description config vars.
+This should extends ContentBlock and should have title and description configuration properties as a minimum.
 
 ```php
 class EditorBlock extends ContentBlock
@@ -64,7 +68,7 @@ class EditorBlock extends ContentBlock
 
 ### The .SS Template
 
-All the object properties will be available within your block template.
+All the DataObject properties will be available within your block template.
 
 ```
 <div>
@@ -74,7 +78,7 @@ All the object properties will be available within your block template.
 
 ## Defining a block
 
-Define all your blocks in the YML config with the blocks: param
+Define all your blocks in the YML configuration with the "blocks" option.
 
 ```yml
 BlockPage:
