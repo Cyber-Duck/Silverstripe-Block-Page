@@ -59,7 +59,7 @@ class ContentBlock extends DataObject
      **/
     public function getCMSFields()
     {
-    	$fields = parent::getCMSFields();
+        $fields = parent::getCMSFields();
 
         $fields->addFieldToTab('Root.Main', TextField::create('Name'));
         $fields->addFieldToTab('Root.Main', TextField::create('CssSelector'));
@@ -100,11 +100,11 @@ class ContentBlock extends DataObject
         $fields->removeByName('Name');
         $fields->removeByName('CssSelector');
 
-		$fields->push(LiteralField::create(false, '<div id="PageType">'));
-		$fields->push(OptionsetField::create('BlockType', $this->getBlockSelectionLabel(), $this->getBlockSelectionOptions())
-				->setCustomValidationMessage('Please select a block type'));
-		$fields->push(LiteralField::create(false, '</div">'));
-		$fields->push(HiddenField::create('BlockStage')->setValue('choose'));
+        $fields->push(LiteralField::create(false, '<div id="PageType">'));
+        $fields->push(OptionsetField::create('BlockType', $this->getBlockSelectionLabel(), $this->getBlockSelectionOptions())
+                ->setCustomValidationMessage('Please select a block type'));
+        $fields->push(LiteralField::create(false, '</div">'));
+        $fields->push(HiddenField::create('BlockStage')->setValue('choose'));
         $fields->push(HiddenField::create('PageID'));
 
         return $fields;
@@ -119,7 +119,7 @@ class ContentBlock extends DataObject
      **/
     private function getBlockSelectionLabel()
     {
-    	$html = '<span class="step-label"><span class="flyout">%d</span><span class="arrow"></span><span class="title">%s</span></span>';
+        $html = '<span class="step-label"><span class="flyout">%d</span><span class="arrow"></span><span class="title">%s</span></span>';
         
         return sprintf($html, 1, 'Add content block');
     }
@@ -133,7 +133,7 @@ class ContentBlock extends DataObject
      **/
     private function getBlockSelectionOptions()
     {
-    	$types = Config::inst()->get('BlockPage', 'blocks');
+        $types = Config::inst()->get('BlockPage', 'blocks');
 
         $html = '<span class="page-icon class-%s"></span>
                  <strong class="title">%s</strong>
@@ -142,12 +142,12 @@ class ContentBlock extends DataObject
         $options = [];
 
         foreach($types as $type) {
-			$option = sprintf($html,
-				$type,
-				Config::inst()->get($type, 'title'),
-				Config::inst()->get($type, 'description')
-			);
-			$options[$type] = DBField::create_field('HTMLText', $option);
+            $option = sprintf($html,
+                $type,
+                Config::inst()->get($type, 'title'),
+                Config::inst()->get($type, 'description')
+            );
+            $options[$type] = DBField::create_field('HTMLText', $option);
         }
         return $options;
     }
