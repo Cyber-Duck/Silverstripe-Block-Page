@@ -1,46 +1,68 @@
 <?php
 
+/**
+ * Content Block Data Object
+ *
+ * Parent class for content blocks to inherit from
+ *
+ * @package silverstripe-block-page
+ * @license MIT License https://github.com/cyber-duck/silverstripe-block-page/blob/master/LICENSE
+ * @author  <andrewm@cyber-duck.co.uk>
+ **/
 class ContentBlock extends DataObject
 {
-	private static $db = [
-		'Name'        => 'Varchar(512)',
+    /**
+     * Object database fields
+     *
+     * @since version 1.0.0
+     *
+     * @var array
+     **/
+    private static $db = [
+        'Name'        => 'Varchar(512)',
         'CssSelector' => 'Varchar(512)',
         'BlockType'   => 'Varchar(30)',
         'BlockSort'   => 'Int'
-	];
+    ];
 
-	private static $summary_fields = [
-		'ID'          => 'ID',
-		'Name'        => 'Name',
-		'ClassName'   => 'Type',
-		'CssSelector' => 'CSS Style'
-	];
+    /**
+     * Object has one relations
+     *
+     * @since version 1.0.0
+     *
+     * @var array
+     **/
+    private static $has_one = [
+        'Page' => 'Page'
+    ];
 
-	private static $has_one = [
-		'Page' => 'Page'
-	];
+    /**
+     * Object CMS GridField summary fields
+     *
+     * @since version 1.0.0
+     *
+     * @var array
+     **/
+    private static $summary_fields = [
+        'ID'          => 'ID',
+        'Name'        => 'Name',
+        'ClassName'   => 'Type',
+        'CssSelector' => 'CSS Style'
+    ];
 
-	public function getCMSActions()
-	{
-    	$fields = parent::getCMSActions();
-
-	    $fields->fieldByName('MajorActions')->push(
-	        $cleanupAction = FormAction::create('cleanup', 'Cleaned')
-	            ->setAttribute('data-icon', 'accept')
-	            ->setAttribute('data-icon-alternate', 'addpage')
-	            ->setAttribute('data-text-alternate', 'Clean-up now')
-	    );
-	    return $fields;
-	}
-
-    public function getCMSValidator()
-    {
-    	return new RequiredFields([]);
-    }
-
+    /**
+     * Update the CMS fields with the block selector or normal fields
+     *
+     * @since version 1.0.0
+     *
+     * @return object
+     **/
     public function getCMSFields()
     {
     	$fields = parent::getCMSFields();
+
+        $fields->addFieldToTab('Root.Main', TextField::create('Name'));
+        $fields->addFieldToTab('Root.Main', TextField::create('CssSelector'));
 
         $fields->push(HiddenField::create('PageID'));
         $fields->push(HiddenField::create('BlockSort'));
@@ -52,6 +74,13 @@ class ContentBlock extends DataObject
         return $fields;
     }
 
+    /**
+     * Get the new or edit action
+     *
+     * @since version 1.0.0
+     *
+     * @return string
+     **/
     private function getAction()
     {
         $path = explode('/', Controller::curr()->getRequest()->getURL());
@@ -59,52 +88,66 @@ class ContentBlock extends DataObject
         return array_pop($path);
     }
 
+    /**
+     * Create the CMS block selector fields
+     *
+     * @since version 1.0.0
+     *
+     * @return object
+     **/
     public function getBlockSelectionFields(FieldList $fields)
     {
-    	$remove = $fields->dataFields();
+        $fields->removeByName('Name');
+        $fields->removeByName('CssSelector');
 
-        foreach($remove as $field) {
-        	if($field->Name != 'PageID') {
-            	$fields->removeByName($field->Name);
-        	}
-        }
-        $tabs = TabSet::create('Root',
-			TabSet::create('Main', 'Main')
-		);
-		$fields->push($tabs);
+		$fields->push(LiteralField::create(false, '<div id="PageType">'));
+		$fields->push(OptionsetField::create('BlockType', $this->getBlockSelectionLabel(), $this->getBlockSelectionOptions())
+				->setCustomValidationMessage('Please select a block type'));
+		$fields->push(LiteralField::create(false, '</div">'));
+		$fields->push(HiddenField::create('BlockStage')->setValue('choose'));
+        $fields->push(HiddenField::create('PageID'));
 
-		$fields->addFieldsToTab('Root.Main', [
-			LiteralField::create(false, '<div id="PageType">'),
-			HeaderField::create('Blocks'),
-			OptionsetField::create('BlockType', $this->getBlockSelectionLabel(), $this->getBlockSelectionOptions())
-				->setCustomValidationMessage('Please select a block type'),
-			LiteralField::create(false, '</div">'),
-			HiddenField::create('BlockStage')->setValue('choose'),
-            HiddenField::create('PageID')
-		]);
         return $fields;
     }
 
+    /**
+     * Create the CMS block selector field label
+     *
+     * @since version 1.0.0
+     *
+     * @return string
+     **/
     private function getBlockSelectionLabel()
     {
-    	$label = '<span class="step-label"><span class="flyout">%d</span><span class="arrow"></span><span class="title">%s</span></span>';
+    	$html = '<span class="step-label"><span class="flyout">%d</span><span class="arrow"></span><span class="title">%s</span></span>';
         
-        return sprintf($label, 1, 'Add content block');
+        return sprintf($html, 1, 'Add content block');
     }
 
+    /**
+     * Return an array of block type dropdown options HTML
+     *
+     * @since version 1.0.0
+     *
+     * @return array
+     **/
     private function getBlockSelectionOptions()
     {
     	$types = Config::inst()->get('BlockPage', 'blocks');
 
-    	$options = [];
+        $html = '<span class="page-icon class-%s"></span>
+                 <strong class="title">%s</strong>
+                 <span class="description">%s</span>';
+
+        $options = [];
 
         foreach($types as $type) {
-			$html = sprintf('<span class="page-icon class-%s"></span><strong class="title">%s</strong><span class="description">%s</span>',
+			$option = sprintf($html,
 				$type,
 				Config::inst()->get($type, 'title'),
 				Config::inst()->get($type, 'description')
 			);
-			$options[$type] = DBField::create_field('HTMLText', $html);
+			$options[$type] = DBField::create_field('HTMLText', $option);
         }
         return $options;
     }

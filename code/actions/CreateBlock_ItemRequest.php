@@ -1,9 +1,30 @@
 <?php
 
+/**
+ * Request handler for creating new blocks in the CMS
+ *
+ * @package silverstripe-block-page
+ * @license MIT License https://github.com/cyber-duck/silverstripe-block-page/blob/master/LICENSE
+ * @author  <andrewm@cyber-duck.co.uk>
+ **/
 class CreateBlock_ItemRequest extends GridFieldDetailForm_ItemRequest
 {
+    /**
+     * Allowe CMS block request actions 
+     *
+     * @since version 1.0.0
+     *
+     * @var array
+     **/
     private static $allowed_actions = ['ItemEditForm', 'doCreateBlock'];
 
+    /**
+     * CMS record form method
+     *
+     * @since version 1.0.0
+     *
+     * @return object
+     **/
     public function ItemEditForm()
     {
         $form = parent::ItemEditForm();
@@ -20,20 +41,7 @@ class CreateBlock_ItemRequest extends GridFieldDetailForm_ItemRequest
         $form->fields()->removeByName('PageID');
         $form->fields()->addFieldsToTab('Root.Main', $fields);
         $form->loadDataFrom($this->record);
-/*
-        $form = new Form(
-            $this,
-            'ItemEditForm',
-            $this->record->getCMSFields(),
-            $actions,
-            $this->component->getValidator()
-        );
-        $form->loadDataFrom($this->record);
-        */
 
-        if($this->getAction() == 'edit') {
-            $form->addExtraClass('cms-content cms-edit-form center cms-content-fields');
-        }
         if($this->getAction() == 'new') {
             $actions->removeByName('action_doSave');
             $button = FormAction::create('doCreateBlock');
@@ -48,7 +56,14 @@ class CreateBlock_ItemRequest extends GridFieldDetailForm_ItemRequest
         return $form;
     }
 
-    public function doCreateBlock($data, $form)
+    /**
+     * Hanldles the block create request and redirects to the new record
+     *
+     * @since version 1.0.0
+     *
+     * @return void
+     **/
+    public function doCreateBlock($data, Form $form)
     {
         $request = Controller::curr()->getRequest();
 
@@ -61,6 +76,13 @@ class CreateBlock_ItemRequest extends GridFieldDetailForm_ItemRequest
         return Controller::curr()->redirect(sprintf('/admin/pages/edit/EditForm/field/ContentBlocks/item/%s/edit', $block->ID));
     }
 
+    /**
+     * Get the current record action
+     *
+     * @since version 1.0.0
+     *
+     * @return string
+     **/
     private function getAction()
     {
         $path = explode('/', Controller::curr()->getRequest()->getURL());
