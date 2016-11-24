@@ -52,6 +52,13 @@ class CreateBlock_ItemRequest extends GridFieldDetailForm_ItemRequest
             $actions->unshift($button);
 
             $form->addExtraClass('cms-content-fields');
+        } else {
+            $button = FormAction::create('doAddBlock');
+            $button->setTitle('New Block')
+                ->setAttribute('data-icon', 'accept')
+                ->setAttribute('data-icon-alternate', 'addpage')
+                ->setAttribute('data-text-alternate', 'Clean-up now');
+            $actions->unshift($button);
         }
         return $form;
     }
@@ -74,6 +81,18 @@ class CreateBlock_ItemRequest extends GridFieldDetailForm_ItemRequest
         $block->write();
 
         return Controller::curr()->redirect(sprintf('/admin/pages/edit/EditForm/field/ContentBlocks/item/%s/edit', $block->ID));
+    }
+
+    /**
+     * Shortcut to add another block quickly
+     *
+     * @since version 1.0.0
+     *
+     * @return void
+     **/
+    public function doAddBlock($data, Form $form)
+    {
+        return Controller::curr()->redirect('/admin/pages/edit/EditForm/field/ContentBlocks/item/new');
     }
 
     /**
