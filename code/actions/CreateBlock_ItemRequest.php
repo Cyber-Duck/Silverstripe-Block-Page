@@ -35,7 +35,6 @@ class CreateBlock_ItemRequest extends GridFieldDetailForm_ItemRequest
             $field->setForm($form);
         }
         $form->fields()->removeByName('Name');
-        $form->fields()->removeByName('CssSelector');
         $form->fields()->removeByName('BlockType');
         $form->fields()->removeByName('BlockStage');
         $form->fields()->removeByName('PageID');

@@ -20,7 +20,6 @@ class ContentBlock extends DataObject
      **/
     private static $db = [
         'Name'        => 'Varchar(512)',
-        'CssSelector' => 'Varchar(512)',
         'BlockType'   => 'Varchar(30)',
         'BlockSort'   => 'Int'
     ];
@@ -46,8 +45,7 @@ class ContentBlock extends DataObject
     private static $summary_fields = [
         'ID'          => 'ID',
         'Name'        => 'Name',
-        'ClassName'   => 'Type',
-        'CssSelector' => 'CSS Style'
+        'ClassName'   => 'Type'
     ];
 
     /**
@@ -71,7 +69,6 @@ class ContentBlock extends DataObject
         $fields = parent::getCMSFields();
 
         $fields->addFieldToTab('Root.Main', TextField::create('Name'));
-        $fields->addFieldToTab('Root.Main', TextField::create('CssSelector'));
 
         $fields->push(HiddenField::create('PageID'));
         $fields->push(HiddenField::create('BlockSort'));
@@ -107,7 +104,6 @@ class ContentBlock extends DataObject
     public function getBlockSelectionFields(FieldList $fields)
     {
         $fields->removeByName('Name');
-        $fields->removeByName('CssSelector');
 
         $fields->push(LiteralField::create(false, '<div id="PageType">'));
         $fields->push(OptionsetField::create('BlockType', $this->getBlockSelectionLabel(), $this->getBlockSelectionOptions())
