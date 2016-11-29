@@ -51,6 +51,15 @@ class ContentBlock extends DataObject
     ];
 
     /**
+     * Default sorting
+     *
+     * @since version 1.0.1
+     *
+     * @var string
+     **/
+    private static $default_sort = 'BlockSort';
+
+    /**
      * Update the CMS fields with the block selector or normal fields
      *
      * @since version 1.0.0
