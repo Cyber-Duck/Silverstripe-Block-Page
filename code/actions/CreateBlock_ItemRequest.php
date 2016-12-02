@@ -39,6 +39,11 @@ class CreateBlock_ItemRequest extends GridFieldDetailForm_ItemRequest
         $form->fields()->removeByName('BlockStage');
         $form->fields()->removeByName('PageID');
         $form->fields()->addFieldsToTab('Root.Main', $fields);
+
+        $name = TextField::create('Name')
+            ->setDescription('Reference name not displayed in the page.');
+
+        $form->fields()->insertAfter($name, 'BlockHeader');
         $form->loadDataFrom($this->record);
 
         if($this->getAction() == 'new') {
