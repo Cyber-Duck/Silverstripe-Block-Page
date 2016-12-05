@@ -10,7 +10,7 @@
          stopOnFailure="false"
          syntaxCheck="false">
     <testsuites>
-        <testsuite name="Block page Test Suite">
+        <testsuite name="Block Page Test Suite">
             <directory>./tests/</directory>
         </testsuite>
     </testsuites>
