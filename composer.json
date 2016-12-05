@@ -16,6 +16,10 @@
             "email": "andrewm@cyber-duck.co.uk"
         }
     ],
+    "require":
+    {
+        "undefinedoffset/sortablegridfield": "0.6.*"
+    },
     "support": {
         "issues": "http://github.com/cyber-duck/silverstripe-block-page/issues"
     },
