@@ -156,4 +156,73 @@ class ContentBlock extends DataObject
         }
         return $options;
     }
+
+    /**
+     * Return an array of permissions
+     *
+     * @since version 1.0.5
+     *
+     * @return array
+     **/
+    public function providePermissions()
+    {
+        return array(
+            "VIEW_CONTENT_BLOCKS"   => "Content Blocks - View",
+            "EDIT_CONTENT_BLOCKS"   => "Content Blocks - Edit",
+            "DELETE_CONTENT_BLOCKS" => "Content Blocks - Delete",
+            "CREATE_CONTENT_BLOCKS" => "Content Blocks - Create"
+        );
+    }
+
+    /**
+     * View permission
+     *
+     * @param object|null $member
+     *
+     * @since version 1.0.5
+     *
+     * @return bool
+     **/
+    public function canView($member = null) {
+        return Permission::check('VIEW_CONTENT_BLOCKS');
+    }
+
+    /**
+     * Edit permission
+     *
+     * @param object|null $member
+     *
+     * @since version 1.0.5
+     *
+     * @return bool
+     **/
+    public function canEdit($member = null) {
+        return Permission::check('EDIT_CONTENT_BLOCKS');
+    }
+
+    /**
+     * Delete permission
+     *
+     * @param object|null $member
+     *
+     * @since version 1.0.5
+     *
+     * @return bool
+     **/
+    public function canDelete($member = null) {
+        return Permission::check('DELETE_CONTENT_BLOCKS');
+    }
+
+    /**
+     * Create permission
+     *
+     * @param object|null $member
+     *
+     * @since version 1.0.5
+     *
+     * @return bool
+     **/
+    public function canCreate($member = null) {
+        return Permission::check('CREATE_CONTENT_BLOCKS');
+    }
 }
