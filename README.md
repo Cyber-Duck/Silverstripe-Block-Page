@@ -1,5 +1,9 @@
 # SilverStripe Block Page
 
+[![Latest Stable Version](https://poser.pugx.org/cyber-duck/silverstripe-block-page/v/stable)](https://packagist.org/packages/cyber-duck/silverstripe-block-page)
+[![Total Downloads](https://poser.pugx.org/cyber-duck/silverstripe-block-page/downloads)](https://packagist.org/packages/cyber-duck/silverstripe-block-page)
+[![License](https://poser.pugx.org/cyber-duck/silverstripe-block-page/license)](https://packagist.org/packages/cyber-duck/silverstripe-block-page)
+
 A modular approach to building pages in SilverStripe. Allows creation of pages in blocks allowing maximum flexibility for developers and CMS admins.
   - Customize block fields easily like you would any other DataObject
   - Use repeating block components and unlimited block variations to create infinite layout variations
