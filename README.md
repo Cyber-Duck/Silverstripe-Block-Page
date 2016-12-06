@@ -4,13 +4,13 @@
 [![Total Downloads](https://poser.pugx.org/cyber-duck/silverstripe-block-page/downloads)](https://packagist.org/packages/cyber-duck/silverstripe-block-page)
 [![License](https://poser.pugx.org/cyber-duck/silverstripe-block-page/license)](https://packagist.org/packages/cyber-duck/silverstripe-block-page)
 
+Author: [Andrew Mc Cormack](https://github.com/Andrew-Mc-Cormack)
+
 A modular approach to building pages in SilverStripe. Allows creation of pages in blocks allowing maximum flexibility for developers and CMS admins.
   - Customize block fields easily like you would any other DataObject
   - Use repeating block components and unlimited block variations to create infinite layout variations
   - Use drag and drop GridField functionality to change and re-order blocks easily
   - Tie in things like forms to blocks
-
-Author: [Andrew Mc Cormack](https://github.com/Andrew-Mc-Cormack)
 
 # Installation
 
