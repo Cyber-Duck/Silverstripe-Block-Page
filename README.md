@@ -7,100 +7,24 @@
 Author: [Andrew Mc Cormack](https://github.com/Andrew-Mc-Cormack)
 
 A modular approach to building pages in SilverStripe. Allows creation of pages in blocks allowing maximum flexibility for developers and CMS admins.
+  
+## Features
+
   - Customize block fields easily like you would any other DataObject
   - Use repeating block components and unlimited block variations to create infinite layout variations
   - Use drag and drop GridField functionality to change and re-order blocks easily
   - Tie in things like forms to blocks
+  
+## Guides
 
-# Installation
-
-## Composer
-
-Add the following to your composer.json file
-
-```json
-{  
-    "require": {  
-        "cyber-duck/silverstripe-block-page": "1.0.*"
-    }
-}
-```
-
-## Extension
-
-In your config.yml file add the block page extension to a Page object
-
-```yml
-BlogPage:
-  extensions:
-    - BlockPageExtension
-```
-
-# Creating Blocks
-
-## Block makeup
-
-A block consists of 2 parts; a DataObject and a .ss template. Both these should have the same name.
-
-e.g: 
-  - EditorBlock.php
-  - EditorBlock.ss
-
-### The DataObject 
-
-This should extends ContentBlock and should have title and description configuration properties as a minimum.
-
-```php
-class EditorBlock extends ContentBlock
-{
-    private static $title = 'Editor';
-
-    private static $description = 'Simple WYSIWYG editor block';
-
-    private static $db = [
-        'Text' => 'HTMLText'
-    ];
-
-    public function getCMSFields()
-    {
-        $fields = parent::getCMSFields();
-
-        return $fields;
-    }
-}
-```
-
-### The .SS Template
-
-All the DataObject properties will be available within your block template.
-
-```
-<div>
-    $Text
-</div>
-```
-
-## Defining a block
-
-Define all your blocks in the YML configuration with the "blocks" option.
-
-```yml
-BlockPage:
-  blocks:
-    - EditorBlock
-    - FeaturedImageBlock
-    - FeaturedQuoteBlock
-```
-
-# Loading Blocks
-
-To loop out the page content blocks add the following to the .ss template file for the page that has the block page extension attached.
-
-```
-<% loop ContentBlocks %>
-$Top.IncludeBlock($ClassName, $ID)
-<% end_loop %>
-```
+  - [Installation](/docs/installation)
+    - [Composer](/docs/installation#composer)
+    - [Extension](/docs/installation#extension)
+  - [Creating Blocks](/docs/creating-blocks)
+    - [Block YML Configuration](/docs/creating-blocks#block-yml-configuration)
+    - [Block Page Configuration](/docs/creating-blocks#block-page-configuration)
+    - [Block DataObject](/docs/creating-blocks#block-dataobject)
+    - [Block Template](/docs/creating-blocks#block-template)
 
 ## License
 
