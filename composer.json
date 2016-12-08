@@ -24,7 +24,7 @@
         "issues": "http://github.com/cyber-duck/silverstripe-block-page/issues"
     },
     "extra": {
-        "installer-name": "silverstripe-block-page"
+        "installer-name": "block-page"
     },
     "prefer-stable": true
 }
