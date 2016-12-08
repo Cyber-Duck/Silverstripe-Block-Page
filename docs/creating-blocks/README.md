@@ -18,7 +18,7 @@ BlockPage:
     - FeaturedQuoteBlock
 ```
 
-# Block Page Configuration
+## Block Page Configuration
 
 To loop out the page content blocks add the following to the .ss template file for the page that has the block page extension attached.
 
