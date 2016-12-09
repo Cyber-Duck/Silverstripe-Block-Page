@@ -1,7 +1,6 @@
 <?php
-
 /**
- * Content Block Data Object
+ * ContentBlock
  *
  * Parent class for content blocks to inherit from
  *
@@ -16,7 +15,7 @@ class ContentBlock extends DataObject
      *
      * @since version 1.0.0
      *
-     * @var array
+     * @config array $db
      **/
     private static $db = [
         'Name'        => 'Varchar(512)',
@@ -29,7 +28,7 @@ class ContentBlock extends DataObject
      *
      * @since version 1.0.0
      *
-     * @var array
+     * @config array $has_one
      **/
     private static $has_one = [
         'Page' => 'Page'
@@ -40,7 +39,7 @@ class ContentBlock extends DataObject
      *
      * @since version 1.0.0
      *
-     * @var array
+     * @config array $summary_fields
      **/
     private static $summary_fields = [
         'ID'          => 'ID',
@@ -53,7 +52,7 @@ class ContentBlock extends DataObject
      *
      * @since version 1.0.1
      *
-     * @var string
+     * @config string $default_sort
      **/
     private static $default_sort = 'BlockSort';
 
@@ -98,6 +97,8 @@ class ContentBlock extends DataObject
      * Create the CMS block selector fields
      *
      * @since version 1.0.0
+     *
+     * @param object $fields
      *
      * @return object
      **/
@@ -177,9 +178,9 @@ class ContentBlock extends DataObject
     /**
      * View permission
      *
-     * @param object|null $member
-     *
      * @since version 1.0.5
+     *
+     * @param object|null $member
      *
      * @return bool
      **/
@@ -190,9 +191,9 @@ class ContentBlock extends DataObject
     /**
      * Edit permission
      *
-     * @param object|null $member
-     *
      * @since version 1.0.5
+     *
+     * @param object|null $member
      *
      * @return bool
      **/
@@ -203,9 +204,9 @@ class ContentBlock extends DataObject
     /**
      * Delete permission
      *
-     * @param object|null $member
-     *
      * @since version 1.0.5
+     *
+     * @param object|null $member
      *
      * @return bool
      **/
@@ -216,9 +217,9 @@ class ContentBlock extends DataObject
     /**
      * Create permission
      *
-     * @param object|null $member
-     *
      * @since version 1.0.5
+     *
+     * @param object|null $member
      *
      * @return bool
      **/

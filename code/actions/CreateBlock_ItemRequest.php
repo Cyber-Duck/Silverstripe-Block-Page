@@ -1,6 +1,7 @@
 <?php
-
 /**
+ * CreateBlock_ItemRequest
+ *
  * Request handler for creating new blocks in the CMS
  *
  * @package silverstripe-block-page
@@ -14,7 +15,7 @@ class CreateBlock_ItemRequest extends GridFieldDetailForm_ItemRequest
      *
      * @since version 1.0.0
      *
-     * @var array
+     * @config array $allowed_actions
      **/
     private static $allowed_actions = ['ItemEditForm', 'doCreateBlock'];
 
@@ -72,6 +73,9 @@ class CreateBlock_ItemRequest extends GridFieldDetailForm_ItemRequest
      *
      * @since version 1.0.0
      *
+     * @param array  $data
+     * @param object $form
+     *
      * @return void
      **/
     public function doCreateBlock($data, Form $form)
@@ -91,6 +95,9 @@ class CreateBlock_ItemRequest extends GridFieldDetailForm_ItemRequest
      * Shortcut to add another block quickly
      *
      * @since version 1.0.0
+     *
+     * @param array  $data
+     * @param object $form
      *
      * @return void
      **/
