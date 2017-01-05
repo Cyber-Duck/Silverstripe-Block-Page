@@ -25,6 +25,7 @@ A modular approach to building pages in SilverStripe. Allows creation of pages i
     - [Block Page Configuration](/docs/creating-blocks#block-page-configuration)
     - [Block DataObject](/docs/creating-blocks#block-dataobject)
     - [Block Template](/docs/creating-blocks#block-template)
+    - [Restricting Blocks](/docs/creating-blocks#restricting-blocks)
 
 ## License
 

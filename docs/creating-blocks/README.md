@@ -63,3 +63,19 @@ The block templates should reside in /themes/YOUR-THEME/templates/Blocks/
     $Text
 </div>
 ```
+
+## Restricting Blocks
+
+You can restrict certain block selections to a particular page type by passing a restrict option
+
+```yml
+BlockPage:
+  blocks:
+    - EditorBlock
+    - FeaturedImageBlock
+    - FeaturedQuoteBlock
+  restrict:
+    BlogPost:
+      - FeaturedImageBlock
+      - FeaturedQuoteBlock
+```

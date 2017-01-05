@@ -137,25 +137,47 @@ class ContentBlock extends DataObject
      *
      * @return array
      **/
+    
     private function getBlockSelectionOptions()
     {
-        $types = Config::inst()->get('BlockPage', 'blocks');
-
         $html = '<span class="page-icon class-%s"></span>
                  <strong class="title">%s</strong>
                  <span class="description">%s</span>';
 
         $options = [];
 
-        foreach($types as $type) {
+        foreach($this->getUnrestrictedBlocks() as $block) {
             $option = sprintf($html,
-                $type,
-                Config::inst()->get($type, 'title'),
-                Config::inst()->get($type, 'description')
+                $block,
+                Config::inst()->get($block, 'title'),
+                Config::inst()->get($block, 'description')
             );
-            $options[$type] = DBField::create_field('HTMLText', $option);
+            $options[$block] = DBField::create_field('HTMLText', $option);
         }
         return $options;
+    }
+
+    /**
+     * Return an array of blocks to choose from
+     *
+     * @since version 1.0.7
+     *
+     * @return array
+     **/
+    private function getUnrestrictedBlocks()
+    {
+        $restrict = (array) Config::inst()->get('BlockPage', 'restrict');
+
+        if(!empty($restrict)) {
+            foreach($restrict as $class => $blocks) {
+                $page = Page::get()->byID($this->PageID);
+
+                if($page->ClassName == $class) {
+                    return $blocks;
+                }
+            }
+        }
+        return Config::inst()->get('BlockPage', 'blocks');
     }
 
     /**
