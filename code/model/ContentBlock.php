@@ -20,9 +20,10 @@ class ContentBlock extends DataObject
     private static $db = [
         'Name'        => 'Varchar(512)',
         'BlockType'   => 'Varchar(30)',
-        'BlockSort'   => 'Int'
+        'BlockSort'   => 'Int',
+        'ParentClass' => 'Varchar(512)'
     ];
-
+    
     /**
      * Object has one relations
      *
@@ -31,7 +32,7 @@ class ContentBlock extends DataObject
      * @config array $has_one
      **/
     private static $has_one = [
-        'Page' => 'Page'
+        'Parent' => 'DataObject'
     ];
 
     /**
@@ -69,9 +70,10 @@ class ContentBlock extends DataObject
 
         $fields->addFieldToTab('Root.Main', TextField::create('Name'));
 
-        $fields->push(HiddenField::create('PageID'));
         $fields->push(HiddenField::create('BlockSort'));
         $fields->push(HiddenField::create('BlockType'));
+        $fields->push(HiddenField::create('ParentID'));
+        $fields->push(HiddenField::create('ParentClass'));
 
         if($this->getAction() == 'new') {
             return $this->getBlockSelectionFields($fields);
@@ -111,7 +113,8 @@ class ContentBlock extends DataObject
                 ->setCustomValidationMessage('Please select a block type'));
         $fields->push(LiteralField::create(false, '</div">'));
         $fields->push(HiddenField::create('BlockStage')->setValue('choose'));
-        $fields->push(HiddenField::create('PageID'));
+        $fields->push(HiddenField::create('ParentID'));
+        $fields->push(HiddenField::create('ParentClass'));
 
         return $fields;
     }
@@ -137,7 +140,6 @@ class ContentBlock extends DataObject
      *
      * @return array
      **/
-    
     private function getBlockSelectionOptions()
     {
         $html = '<span class="page-icon class-%s"></span>
@@ -169,11 +171,16 @@ class ContentBlock extends DataObject
         $restrict = (array) Config::inst()->get('BlockPage', 'restrict');
 
         if(!empty($restrict)) {
-            foreach($restrict as $class => $blocks) {
-                $page = Page::get()->byID($this->PageID);
+            foreach($restrict as $object => $blocks) {
 
-                if($page->ClassName == $class) {
-                    return $blocks;
+                $class = $this->ParentClass;
+
+                if($class) {
+                    $parent = $object::get()->byID($this->ParentID);
+
+                    if($parent->ClassName == $object) {
+                        return $blocks;
+                    }
                 }
             }
         }
@@ -195,6 +202,17 @@ class ContentBlock extends DataObject
             "DELETE_CONTENT_BLOCKS" => "Content Blocks - Delete",
             "CREATE_CONTENT_BLOCKS" => "Content Blocks - Create"
         );
+    }
+
+    /**
+     * Get the block title
+     *
+     * @since version 1.1
+     *
+     * @return string
+     **/
+    public function getTitle() {
+        return $this->Name;
     }
 
     /**

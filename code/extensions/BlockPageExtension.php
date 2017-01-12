@@ -9,7 +9,7 @@
  * @author  <andrewm@cyber-duck.co.uk>
  **/
 class BlockPageExtension extends DataExtension
-{
+{    
     /**
      * Has many object relations
      *
@@ -59,7 +59,8 @@ class BlockPageExtension extends DataExtension
         $detail = $grid->getConfig()->getComponentByType('GridFieldDetailForm');
 
         $content = new ContentBlock();
-        $content->PageID = $this->owner->ID;
+        $content->ParentID = $this->owner->ID;
+        $content->ParentClass = $this->owner->ClassName;
         $detail->setFields($content->getCMSFields());
 
         $fields->addFieldToTab('Root.ContentBlocks', $grid);

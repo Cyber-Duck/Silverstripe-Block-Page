@@ -38,8 +38,11 @@ class CreateBlock_ItemRequest extends GridFieldDetailForm_ItemRequest
         $form->fields()->removeByName('Name');
         $form->fields()->removeByName('BlockType');
         $form->fields()->removeByName('BlockStage');
-        $form->fields()->removeByName('PageID');
+        $form->fields()->removeByName('ParentID');
+        $form->fields()->removeByName('ParentClass');
         $form->fields()->addFieldsToTab('Root.Main', $fields);
+
+        $this->record->ParentClass = $this->gridField->getList()->getForeignClass();
 
         $name = TextField::create('Name')
             ->setDescription('Reference name not displayed in the page.');
@@ -85,11 +88,11 @@ class CreateBlock_ItemRequest extends GridFieldDetailForm_ItemRequest
         $class = $request->postVar('BlockType');
 
         $block = new $class();
-        $block->PageID = $request->postVar('PageID');
+        $block->ParentID = $request->postVar('ParentID');
+        $block->ParentClass = $request->postVar('ParentClass');
         $block->write();
 
-        return Controller::curr()->redirect(sprintf('/admin/pages/edit/EditForm/field/ContentBlocks/item/%s/edit', $block->ID));
-    }
+        return Controller::curr()->redirect(Controller::join_links($this->gridField->Link('item'), $block->ID, 'edit'));    }
 
     /**
      * Shortcut to add another block quickly
@@ -103,7 +106,7 @@ class CreateBlock_ItemRequest extends GridFieldDetailForm_ItemRequest
      **/
     public function doAddBlock($data, Form $form)
     {
-        return Controller::curr()->redirect('/admin/pages/edit/EditForm/field/ContentBlocks/item/new');
+        return Controller::curr()->redirect(Controller::join_links($this->gridField->Link('item'), 'new'));
     }
 
     /**
