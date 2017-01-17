@@ -35,7 +35,7 @@ class CreateBlock_ItemRequest extends GridFieldDetailForm_ItemRequest
         foreach($fields as $field) {
             $field->setForm($form);
         }
-        $form->fields()->removeByName('Name');
+        $form->fields()->removeByName('Title');
         $form->fields()->removeByName('BlockType');
         $form->fields()->removeByName('BlockStage');
         $form->fields()->removeByName('ParentID');
@@ -44,8 +44,8 @@ class CreateBlock_ItemRequest extends GridFieldDetailForm_ItemRequest
 
         $this->record->ParentClass = $this->gridField->getList()->getForeignClass();
 
-        $name = TextField::create('Name')
-            ->setDescription('Reference name not displayed in the page.');
+        $name = TextField::create('Title')
+            ->setDescription('Reference title not displayed in the page.');
 
         $form->fields()->insertAfter($name, 'BlockHeader');
         $form->loadDataFrom($this->record);
