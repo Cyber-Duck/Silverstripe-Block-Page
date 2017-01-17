@@ -168,23 +168,18 @@ class ContentBlock extends DataObject
      **/
     private function getUnrestrictedBlocks()
     {
-        $restrict = (array) Config::inst()->get('BlockPage', 'restrict');
+        $rules = (array) Config::inst()->get('BlockPage', 'restrict');
 
-        if(!empty($restrict)) {
-            foreach($restrict as $object => $blocks) {
+        if(!empty($rules)) {
+            foreach($rules as $restricted => $blocks) {
+                $parent = $this->ParentClass;
 
-                $class = $this->ParentClass;
-
-                if($class) {
-                    $parent = $object::get()->byID($this->ParentID);
-
-                    if($parent->ClassName == $object) {
-                        return $blocks;
-                    }
+                if($parent == $restricted) {
+                    return $blocks;
                 }
             }
         }
-        return Config::inst()->get('BlockPage', 'blocks');
+        return (array) Config::inst()->get('BlockPage', 'blocks');
     }
 
     /**
