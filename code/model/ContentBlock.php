@@ -18,7 +18,7 @@ class ContentBlock extends DataObject
      * @config array $db
      **/
     private static $db = [
-        'Name'        => 'Varchar(512)',
+        'Title'       => 'Varchar(512)',
         'BlockType'   => 'Varchar(30)',
         'BlockSort'   => 'Int',
         'ParentClass' => 'Varchar(512)'
@@ -44,7 +44,7 @@ class ContentBlock extends DataObject
      **/
     private static $summary_fields = [
         'ID'          => 'ID',
-        'Name'        => 'Name',
+        'Title'       => 'Title',
         'ClassName'   => 'Type'
     ];
 
@@ -68,7 +68,7 @@ class ContentBlock extends DataObject
     {
         $fields = parent::getCMSFields();
 
-        $fields->addFieldToTab('Root.Main', TextField::create('Name'));
+        $fields->addFieldToTab('Root.Main', TextField::create('Title'));
 
         $fields->push(HiddenField::create('BlockSort'));
         $fields->push(HiddenField::create('BlockType'));
@@ -106,7 +106,7 @@ class ContentBlock extends DataObject
      **/
     public function getBlockSelectionFields(FieldList $fields)
     {
-        $fields->removeByName('Name');
+        $fields->removeByName('Title');
 
         $fields->push(LiteralField::create(false, '<div id="PageType">'));
         $fields->push(OptionsetField::create('BlockType', $this->getBlockSelectionLabel(), $this->getBlockSelectionOptions())
@@ -202,17 +202,6 @@ class ContentBlock extends DataObject
             "DELETE_CONTENT_BLOCKS" => "Content Blocks - Delete",
             "CREATE_CONTENT_BLOCKS" => "Content Blocks - Create"
         );
-    }
-
-    /**
-     * Get the block title
-     *
-     * @since version 1.1
-     *
-     * @return string
-     **/
-    public function getTitle() {
-        return $this->Name;
     }
 
     /**
