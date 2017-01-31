@@ -58,6 +58,15 @@ class ContentBlock extends DataObject
     private static $default_sort = 'BlockSort';
 
     /**
+     * Reference to current block parent
+     *
+     * @since version 1.1.0
+     *
+     * @config string $parent
+     **/
+    private static $parent;
+
+    /**
      * Update the CMS fields with the block selector or normal fields
      *
      * @since version 1.0.0
@@ -172,9 +181,10 @@ class ContentBlock extends DataObject
 
         if(!empty($rules)) {
             foreach($rules as $restricted => $blocks) {
-                $parent = $this->ParentClass;
-
-                if($parent == $restricted) {
+                if(!self::$parent) {
+                    self::$parent = $this->ParentClass;
+                }
+                if(self::$parent == $restricted) {
                     return $blocks;
                 }
             }
