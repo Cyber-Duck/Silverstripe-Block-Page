@@ -1,6 +1,7 @@
 # SilverStripe Block Page
 
 [![Latest Stable Version](https://poser.pugx.org/cyber-duck/silverstripe-block-page/v/stable)](https://packagist.org/packages/cyber-duck/silverstripe-block-page)
+[![Latest Unstable Version](https://poser.pugx.org/cyber-duck/silverstripe-block-page/v/unstable)](https://packagist.org/packages/cyber-duck/silverstripe-block-page)
 [![Total Downloads](https://poser.pugx.org/cyber-duck/silverstripe-block-page/downloads)](https://packagist.org/packages/cyber-duck/silverstripe-block-page)
 [![License](https://poser.pugx.org/cyber-duck/silverstripe-block-page/license)](https://packagist.org/packages/cyber-duck/silverstripe-block-page)
 
