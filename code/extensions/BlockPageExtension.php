@@ -67,4 +67,37 @@ class BlockPageExtension extends DataExtension
 
         return $fields;
     }
+
+    public function onAfterDuplicate($new, $dowrite = null)
+    {
+        /*
+         * SiteTree duplicate will call this twice. Only the second call
+         * will have the ID set. See source of SiteTree:duplicate and
+         * DataObject::duplicate to see why.
+         *
+         * The simplest way to identify that we're in the second call is to
+         * use the above default value.
+         *
+         * It is possible in the future we will have to identify in another
+         * way by e.g. keeping a counter of calls or walking the backtrace.
+         *
+         */
+
+
+        if ($dowrite === null) {
+
+            $blocks = $this->owner->ContentBlocks();
+            foreach ($blocks
+                     as
+                     $block)
+            {
+                /** @var ContentBlock $block */
+                $block = clone $block;
+                $block->ID = null;
+                $block->LastEdited = null;
+                $block->ParentID = $new->ID;
+                $block->write(false, true, true);
+            }
+        }
+    }
 }
