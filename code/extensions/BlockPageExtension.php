@@ -92,11 +92,11 @@ class BlockPageExtension extends DataExtension
                      $block)
             {
                 /** @var ContentBlock $block */
-                $block = clone $block;
-                $block->ID = null;
-                $block->LastEdited = null;
+                $block = $block->duplicate(true);
+
                 $block->ParentID = $new->ID;
-                $block->write(false, true, true);
+
+                $block->write(false, false, true);
             }
         }
     }
