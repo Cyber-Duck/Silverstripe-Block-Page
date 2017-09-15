@@ -8,7 +8,7 @@
  * @license MIT License https://github.com/cyber-duck/silverstripe-block-page/blob/master/LICENSE
  * @author  <andrewm@cyber-duck.co.uk>
  **/
-class ContentBlock extends DataObject
+class ContentBlock extends DataObject implements PermissionProvider
 {
     /**
      * Object database fields
