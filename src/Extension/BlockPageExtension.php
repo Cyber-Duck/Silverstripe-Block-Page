@@ -2,6 +2,13 @@
 
 namespace CyberDuck\BlockPage\Extension;
 
+use CyberDuck\BlockPage\Model\ContentBlock;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
+use SilverStripe\ORM\DataObject;
+use UndefinedOffset\SortableGridField\Forms\GridFieldSortableRows;
+
 /**
  * BlockPageExtension
  *
@@ -21,7 +28,7 @@ class BlockPageExtension extends DataExtension
      * @config array $has_many
      **/
     private static $has_many = [
-        'ContentBlocks' => 'ContentBlock'
+        'ContentBlocks' => 'CyberDuck\BlockPage\Model\ContentBlock'
     ];
 
     /**
@@ -85,20 +92,11 @@ class BlockPageExtension extends DataExtension
          * way by e.g. keeping a counter of calls or walking the backtrace.
          *
          */
-
-
         if ($dowrite === null) {
-
             $blocks = $this->owner->ContentBlocks();
-            foreach ($blocks
-                     as
-                     $block)
-            {
-                /** @var ContentBlock $block */
+            foreach ($blocks as $block) {
                 $block = $block->duplicate(true);
-
                 $block->ParentID = $new->ID;
-
                 $block->write(false, false, true);
             }
         }

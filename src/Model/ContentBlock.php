@@ -2,6 +2,16 @@
 
 namespace CyberDuck\BlockPage\Model;
 
+use SilverStripe\Control\Controller;
+use SilverStripe\Core\Config\Config;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\FieldType\DBField;
+use SilverStripe\Forms\HiddenField;
+use SilverStripe\Forms\LiteralField;
+use SilverStripe\Forms\OptionsetField;
+use SilverStripe\Forms\TextField;
+use SilverStripe\Security\Permission;
+
 /**
  * ContentBlock
  *
@@ -35,7 +45,7 @@ class ContentBlock extends DataObject implements PermissionProvider
      * @config array $has_one
      **/
     private static $has_one = [
-        'Parent' => 'DataObject'
+        'Parent' => 'SilverStripe\ORM\DataObject'
     ];
 
     /**
