@@ -1,7 +1,7 @@
 {
     "name": "cyber-duck/silverstripe-block-page",
     "description": "A modular approach to building pages in SilverStripe",
-    "type": "silverstripe-module",
+    "type": "silverstripe-vendormodule",
     "homepage": "http://github.com/cyber-duck/silverstripe-block-page",
     "keywords": [
         "silverstripe",
@@ -32,11 +32,7 @@
         }
     },
     "extra": {
-        "installer-name": "block-page",
-        "expose": [
-            "css",
-            "js"
-        ]
+        "installer-name": "block-page"
     },
     "minimum-stability": "dev",
     "prefer-stable": true
