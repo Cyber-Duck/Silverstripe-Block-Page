@@ -1,4 +1,7 @@
 <?php
+
+namespace CyberDuck\BlockPage\Extension;
+
 /**
  * BlockPageExtension
  *

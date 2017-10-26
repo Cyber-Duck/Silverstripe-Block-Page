@@ -1,4 +1,10 @@
 <?php
+
+namespace CyberDuck\BlockPage\Action;
+
+use SilverStripe\Forms\GridField\GridFieldDetailForm_ItemRequest;
+use SilverStripe\Forms\TextField;
+
 /**
  * CreateBlock_ItemRequest
  *
