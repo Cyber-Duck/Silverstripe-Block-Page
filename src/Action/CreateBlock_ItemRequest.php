@@ -101,7 +101,8 @@ class CreateBlock_ItemRequest extends GridFieldDetailForm_ItemRequest
         $block->ParentClass = $request->postVar('ParentClass');
         $block->write();
 
-        return Controller::curr()->redirect(Controller::join_links($this->gridField->Link('item'), $block->ID, 'edit'));    }
+        return Controller::curr()->redirect(Controller::join_links($this->gridField->Link('item'), $block->ID, 'edit'));    
+    }
 
     /**
      * Shortcut to add another block quickly

@@ -2,10 +2,13 @@
 
 namespace CyberDuck\BlockPage\Extension;
 
+use CyberDuck\BlockPage\Action\CreateBlock_ItemRequest;
 use CyberDuck\BlockPage\Model\ContentBlock;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
 use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
+use SilverStripe\Forms\GridField\GridFieldDetailForm;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\DataObject;
 use UndefinedOffset\SortableGridField\Forms\GridFieldSortableRows;
@@ -63,11 +66,11 @@ class BlockPageExtension extends DataExtension
         $grid = new GridField('ContentBlocks', 'Content Blocks', $blocks, $editor);
 
         $grid->getConfig()
-            ->removeComponentsByType('GridFieldAddExistingAutocompleter')
-            ->getComponentByType('GridFieldDetailForm')
-            ->setItemRequestClass('CreateBlock_ItemRequest');
+            ->removeComponentsByType(GridFieldAddExistingAutocompleter::class)
+            ->getComponentByType(GridFieldDetailForm::class)
+            ->setItemRequestClass(CreateBlock_ItemRequest::class);
 
-        $detail = $grid->getConfig()->getComponentByType('GridFieldDetailForm');
+        $detail = $grid->getConfig()->getComponentByType(GridFieldDetailForm::class);
 
         $content = new ContentBlock();
         $content->ParentID = $this->owner->ID;

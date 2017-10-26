@@ -6,6 +6,7 @@ use SilverStripe\Control\Controller;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBField;
+use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\HiddenField;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\OptionsetField;
@@ -81,6 +82,15 @@ class ContentBlock extends DataObject implements PermissionProvider
     private static $parent;
 
     /**
+     * Table name
+     *
+     * @since version 4.0.0
+     *
+     * @config string $table_name
+     **/
+    private static $table_name = 'ContentBlock';
+
+    /**
      * Update the CMS fields with the block selector or normal fields
      *
      * @since version 1.0.0
@@ -131,7 +141,7 @@ class ContentBlock extends DataObject implements PermissionProvider
     {
         $fields->removeByName('Title');
 
-        $fields->push(LiteralField::create(false, '<div id="PageType">'));
+        $fields->push(LiteralField::create(false, '<div id="PageType" class="cms-add-form">'));
         $fields->push(OptionsetField::create('BlockType', $this->getBlockSelectionLabel(), $this->getBlockSelectionOptions())
                 ->setCustomValidationMessage('Please select a block type'));
         $fields->push(LiteralField::create(false, '</div">'));
@@ -151,9 +161,11 @@ class ContentBlock extends DataObject implements PermissionProvider
      **/
     private function getBlockSelectionLabel()
     {
-        $html = '<span class="step-label"><span class="flyout">%d</span><span class="arrow"></span><span class="title">%s</span></span>';
-        
-        return sprintf($html, 1, 'Add content block');
+        return DBField::create_field('HTMLText','<span class="step-label">
+        <span class="flyout">Step 1.</span>
+        <span class="arrow"></span>
+        <span class="title">Add content block</span>
+        </span>');
     }
 
     /**
@@ -191,7 +203,7 @@ class ContentBlock extends DataObject implements PermissionProvider
      **/
     private function getUnrestrictedBlocks()
     {
-        $rules = (array) Config::inst()->get('BlockPage', 'restrict');
+        $rules = (array) Config::inst()->get(ContentBlock::class, 'restrict');
 
         if(!empty($rules)) {
             foreach($rules as $restricted => $blocks) {
@@ -203,7 +215,7 @@ class ContentBlock extends DataObject implements PermissionProvider
                 }
             }
         }
-        return (array) Config::inst()->get('BlockPage', 'blocks');
+        return (array) Config::inst()->get(ContentBlock::class, 'blocks');
     }
 
     /**
@@ -274,7 +286,7 @@ class ContentBlock extends DataObject implements PermissionProvider
      *
      * @return bool
      **/
-    public function canCreate($member = null, $context = []) 
+    public function canCreate($member = null, $context = [])
     {
         return Permission::check('CREATE_CONTENT_BLOCKS');
     }
