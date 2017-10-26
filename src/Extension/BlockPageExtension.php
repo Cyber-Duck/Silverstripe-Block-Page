@@ -6,6 +6,7 @@ use CyberDuck\BlockPage\Model\ContentBlock;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
+use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\DataObject;
 use UndefinedOffset\SortableGridField\Forms\GridFieldSortableRows;
 

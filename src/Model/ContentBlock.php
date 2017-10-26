@@ -11,6 +11,7 @@ use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\OptionsetField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\Security\Permission;
+use SilverStripe\Security\PermissionProvider;
 
 /**
  * ContentBlock
@@ -214,12 +215,12 @@ class ContentBlock extends DataObject implements PermissionProvider
      **/
     public function providePermissions()
     {
-        return array(
+        return [
             "VIEW_CONTENT_BLOCKS"   => "Content Blocks - View",
             "EDIT_CONTENT_BLOCKS"   => "Content Blocks - Edit",
             "DELETE_CONTENT_BLOCKS" => "Content Blocks - Delete",
             "CREATE_CONTENT_BLOCKS" => "Content Blocks - Create"
-        );
+        ];
     }
 
     /**
