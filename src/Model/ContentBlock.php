@@ -232,7 +232,7 @@ class ContentBlock extends DataObject implements PermissionProvider
      *
      * @return bool
      **/
-    public function canView($member = null) {
+    public function canView($member = null, $context = []) {
         return Permission::check('VIEW_CONTENT_BLOCKS');
     }
 
@@ -245,7 +245,7 @@ class ContentBlock extends DataObject implements PermissionProvider
      *
      * @return bool
      **/
-    public function canEdit($member = null) {
+    public function canEdit($member = null, $context = []) {
         return Permission::check('EDIT_CONTENT_BLOCKS');
     }
 
@@ -258,7 +258,7 @@ class ContentBlock extends DataObject implements PermissionProvider
      *
      * @return bool
      **/
-    public function canDelete($member = null) {
+    public function canDelete($member = null, $context = []) {
         return Permission::check('DELETE_CONTENT_BLOCKS');
     }
 
@@ -271,7 +271,7 @@ class ContentBlock extends DataObject implements PermissionProvider
      *
      * @return bool
      **/
-    public function canCreate($member = null) {
+    public function canCreate($member = null, $context = []) {
         return Permission::check('CREATE_CONTENT_BLOCKS');
     }
 }
