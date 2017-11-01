@@ -34,7 +34,7 @@ class BlockPageExtension extends DataExtension
      * @config array $has_many
      **/
     private static $has_many = [
-        'ContentBlocks' => 'CyberDuck\BlockPage\Model\ContentBlock'
+        'ContentBlocks' => ContentBlock::class
     ];
 
     /**
