@@ -11,8 +11,9 @@ use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
 use SilverStripe\Forms\GridField\GridFieldDetailForm;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\DataObject;
-use UndefinedOffset\SortableGridField\Forms\GridFieldSortableRows;
 use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
+
+// @todo remove search adn filtering from girdfield
 
 /**
  * BlockPageExtension
