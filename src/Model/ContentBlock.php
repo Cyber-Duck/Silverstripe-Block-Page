@@ -46,7 +46,7 @@ class ContentBlock extends DataObject
      * @config array $has_one
      **/
     private static $has_one = [
-        'Parent' => 'SilverStripe\ORM\DataObject'
+        'Parent' => DataObject::class
     ];
 
     /**
