@@ -1,0 +1,6 @@
+---
+Name: cyber-duck block page config
+---
+CyberDuck\BlockPage\Model\ContentBlock:
+  extensions:
+    - SilverStripe\Versioned\Versioned

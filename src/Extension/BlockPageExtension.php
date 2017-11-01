@@ -12,8 +12,7 @@ use SilverStripe\Forms\GridField\GridFieldDetailForm;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\DataObject;
 use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
-
-// @todo remove search adn filtering from girdfield
+use SilverStripe\Forms\GridField\GridFieldVersionedState;
 
 /**
  * BlockPageExtension
@@ -69,6 +68,7 @@ class BlockPageExtension extends DataExtension
 
         $grid->getConfig()
             ->removeComponentsByType(GridFieldAddExistingAutocompleter::class)
+            ->addComponent(new GridFieldVersionedState(['BlockEdited']))
             ->getComponentByType(GridFieldDetailForm::class)
             ->setItemRequestClass(CreateBlock_ItemRequest::class);
 
