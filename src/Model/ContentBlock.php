@@ -57,9 +57,9 @@ class ContentBlock extends DataObject
      * @config array $summary_fields
      **/
     private static $summary_fields = [
-        'ID'          => 'ID',
-        'Title'       => 'Title',
-        'ClassName'   => 'Type'
+        'BlockType'   => 'Type',
+        'BlockTitle'  => 'Title',
+        'BlockEdited' => 'Last Updated'
     ];
 
     /**
@@ -88,6 +88,42 @@ class ContentBlock extends DataObject
      * @config string $table_name
      **/
     private static $table_name = 'ContentBlock';
+
+    /**
+     * Summary field block type
+     *
+     * @since version 4.0.0
+     *
+     * @return string
+     **/
+    public function getBlockType()
+    {
+        return $this->config()->title;
+    }
+
+    /**
+     * Summary field block title
+     *
+     * @since version 4.0.0
+     *
+     * @return string
+     **/
+    public function getBlockTitle()
+    {
+        return $this->Title;
+    }
+
+    /**
+     * Summary field last edited
+     *
+     * @since version 4.0.0
+     *
+     * @return string
+     **/
+    public function getBlockEdited()
+    {
+        return date('j M Y H:i:s ', strtotime($this->LastEdited)).' ';
+    }
 
     /**
      * Update the CMS fields with the block selector or normal fields
