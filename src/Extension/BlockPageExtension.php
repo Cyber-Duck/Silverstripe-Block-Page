@@ -12,6 +12,7 @@ use SilverStripe\Forms\GridField\GridFieldDetailForm;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\DataObject;
 use UndefinedOffset\SortableGridField\Forms\GridFieldSortableRows;
+use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
 
 /**
  * BlockPageExtension
@@ -62,7 +63,7 @@ class BlockPageExtension extends DataExtension
     public function updateCMSFields(FieldList $fields) 
     {   
         $blocks = $this->owner->ContentBlocks();
-        $editor = GridFieldConfig_RelationEditor::create()->addComponent(new GridFieldSortableRows('BlockSort'));
+        $editor = GridFieldConfig_RelationEditor::create()->addComponent(new GridFieldOrderableRows('BlockSort'));
         $grid = new GridField('ContentBlocks', 'Content Blocks', $blocks, $editor);
 
         $grid->getConfig()
