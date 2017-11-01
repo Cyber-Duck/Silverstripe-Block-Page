@@ -12,7 +12,6 @@ use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\OptionsetField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\Security\Permission;
-use SilverStripe\Security\PermissionProvider;
 
 /**
  * ContentBlock
@@ -23,7 +22,7 @@ use SilverStripe\Security\PermissionProvider;
  * @license MIT License https://github.com/cyber-duck/silverstripe-block-page/blob/master/LICENSE
  * @author  <andrewm@cyber-duck.co.uk>
  **/
-class ContentBlock extends DataObject implements PermissionProvider
+class ContentBlock extends DataObject
 {
     /**
      * Object database fields
@@ -216,78 +215,5 @@ class ContentBlock extends DataObject implements PermissionProvider
             }
         }
         return (array) Config::inst()->get(ContentBlock::class, 'blocks');
-    }
-
-    /**
-     * Return an array of permissions
-     *
-     * @since version 1.0.5
-     *
-     * @return array
-     **/
-    public function providePermissions()
-    {
-        return [
-            "VIEW_CONTENT_BLOCKS"   => "Content Blocks - View",
-            "EDIT_CONTENT_BLOCKS"   => "Content Blocks - Edit",
-            "DELETE_CONTENT_BLOCKS" => "Content Blocks - Delete",
-            "CREATE_CONTENT_BLOCKS" => "Content Blocks - Create"
-        ];
-    }
-
-    /**
-     * View permission
-     *
-     * @since version 1.0.5
-     *
-     * @param object|null $member
-     *
-     * @return bool
-     **/
-    public function canView($member = null, $context = []) 
-    {
-        return Permission::check('VIEW_CONTENT_BLOCKS');
-    }
-
-    /**
-     * Edit permission
-     *
-     * @since version 1.0.5
-     *
-     * @param object|null $member
-     *
-     * @return bool
-     **/
-    public function canEdit($member = null, $context = []) 
-    {
-        return Permission::check('EDIT_CONTENT_BLOCKS');
-    }
-
-    /**
-     * Delete permission
-     *
-     * @since version 1.0.5
-     *
-     * @param object|null $member
-     *
-     * @return bool
-     **/
-    public function canDelete($member = null, $context = []) 
-    {
-        return Permission::check('DELETE_CONTENT_BLOCKS');
-    }
-
-    /**
-     * Create permission
-     *
-     * @since version 1.0.5
-     *
-     * @param object|null $member
-     *
-     * @return bool
-     **/
-    public function canCreate($member = null, $context = [])
-    {
-        return Permission::check('CREATE_CONTENT_BLOCKS');
     }
 }
