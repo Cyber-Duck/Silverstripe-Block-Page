@@ -49,7 +49,7 @@ class BlockPageExtension extends DataExtension
      **/
     public function IncludeBlock($class, $id)
     {   
-        return DataObject::get_by_id($class, $id)->renderWith($class);
+        return DataObject::get_by_id($class, $id)->renderWith('Block/'.$class);
     }
 
     /**
