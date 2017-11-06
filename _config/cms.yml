@@ -3,4 +3,4 @@ Name: block page cms config
 ---
 SilverStripe\Admin\LeftAndMain:
   extra_requirements_css:
-    - vendor/cyber-duck/silverstripe-block-page/assets/css/block-page.css
+    - resources/cyber-duck/silverstripe-block-page/assets/css/block-page.css
