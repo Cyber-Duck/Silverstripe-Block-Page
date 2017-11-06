@@ -176,31 +176,17 @@ class ContentBlock extends DataObject
     {
         $fields->removeByName('Title');
 
+        $options = $this->getBlockSelectionOptions();
+        $checked = key(array_slice($options, 0, 1, true));
+
         $fields->push(LiteralField::create(false, '<div id="PageType" class="cms-add-form">'));
-        $fields->push(OptionsetField::create('BlockType', $this->getBlockSelectionLabel(), $this->getBlockSelectionOptions())
-                ->setCustomValidationMessage('Please select a block type'));
+        $fields->push(OptionsetField::create('BlockType', false, $options, $checked));
         $fields->push(LiteralField::create(false, '</div">'));
         $fields->push(HiddenField::create('BlockStage')->setValue('choose'));
         $fields->push(HiddenField::create('ParentID'));
         $fields->push(HiddenField::create('ParentClass'));
 
         return $fields;
-    }
-
-    /**
-     * Create the CMS block selector field label
-     *
-     * @since version 1.0.0
-     *
-     * @return string
-     **/
-    private function getBlockSelectionLabel()
-    {
-        return DBField::create_field('HTMLText','<span class="step-label">
-        <span class="flyout">Step 1.</span>
-        <span class="arrow"></span>
-        <span class="title">Add content block</span>
-        </span>');
     }
 
     /**
@@ -212,15 +198,20 @@ class ContentBlock extends DataObject
      **/
     private function getBlockSelectionOptions()
     {
-        $html = '<span class="page-icon class-%s"></span>
-                 <strong class="title">%s</strong>
-                 <span class="description">%s</span>';
+        $html = '<div class="form-check-overlay"></div>
+                 <div class="form-check-section">
+                    <div class="form-check-img">
+                        <img src="%s" height="150" width="360">
+                    </div>
+                    <strong class="form-check-title">%s</strong>
+                    <span class="form-check-description">%s</span>
+                 </div>';
 
         $options = [];
 
         foreach($this->getUnrestrictedBlocks() as $block) {
             $option = sprintf($html,
-                $block,
+                Config::inst()->get($block, 'preview'),
                 Config::inst()->get($block, 'title'),
                 Config::inst()->get($block, 'description')
             );
