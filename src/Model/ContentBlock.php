@@ -243,4 +243,28 @@ class ContentBlock extends DataObject
         }
         return (array) Config::inst()->get(ContentBlock::class, 'blocks');
     }
+    
+    /**
+     * Render the block holder template
+     *
+     * @since version 4.0.0
+     *
+     * @return string
+     **/
+    public function getTemplateHolder()
+    {
+        return $this->renderWith(['Block/ContentBlock_holder']);
+    }
+    
+    /**
+     * Render the individual block template
+     *
+     * @since version 4.0.0
+     *
+     * @return string
+     **/
+    public function getTemplate()
+    {   
+        return $this->renderWith('Block/'.$this->ClassName);
+    }
 }

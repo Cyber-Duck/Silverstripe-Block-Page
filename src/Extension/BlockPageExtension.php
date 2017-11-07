@@ -37,21 +37,6 @@ class BlockPageExtension extends DataExtension
     ];
 
     /**
-     * Method to include content blocks in the page template
-     *
-     * @since version 1.0.0
-     *
-     * @param string $class
-     * @param int    $id
-     *
-     * @return string
-     **/
-    public function IncludeBlock($class, $id)
-    {   
-        return DataObject::get_by_id($class, $id)->renderWith('Block/'.$class);
-    }
-
-    /**
      * Update the page CMS fields with the content block grid field
      *
      * @since version 1.0.0
