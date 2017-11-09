@@ -35,7 +35,6 @@
         "installer-name": "block-page",
         "expose": [
             "assets/css",
-            "assets/img",
             "assets/js"
         ]
     },
