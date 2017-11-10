@@ -33,7 +33,7 @@ Add the following to your composer.json file and run /dev/buid?flush=all
 }
 ```
 
-## Block Setup
+## Setup
 
 ### Add Extension and Template Loop
 
