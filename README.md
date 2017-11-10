@@ -19,7 +19,7 @@ A modular approach to building pages in SilverStripe which allows model based pa
 
 ## Screen Shots
 
-  - [Block Selection](/docs/images/block-selection.jpg)
+  - [Block Selection](/docs/images/block-selection.jpeg)
 
 ## Installation
 
@@ -37,7 +37,7 @@ Add the following to your composer.json file and run /dev/buid?flush=all
 
 ### Add Extension and Template Loop
 
-The first step to adding block functionaliy is to apply the block page extension to your DataObject. This can be a normal DataObject or a Page.
+The first step to adding block functionality is to apply the block page extension to your DataObject. This can be a normal DataObject or a Page.
 
 ```yml
 Page:
@@ -71,14 +71,14 @@ use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
 
 class EditorBlock extends ContentBlock
 {
-	  private static $title = 'Editor';
+    private static $title = 'Editor';
 
-	  private static $description = 'Simple WYSIWYG editor block';
+    private static $description = 'Simple WYSIWYG editor block';
     
     private static $preview = '/themes/{YourTheme}/img/block/EditorBlock.png';
 
   	private static $db = [
-		    'Content' => 'HTMLText'
+        'Content' => 'HTMLText'
 	  ];
 
     public function getCMSFields()
@@ -92,7 +92,7 @@ class EditorBlock extends ContentBlock
         $fields->addFieldToTab('Root.Main', HTMLEditorField::create('Content')); // example field
 
         return $fields;
-  }
+    }
 }
 ```
 
