@@ -1,4 +1,4 @@
-# SilverStripe Block Page
+# SilverStripe 4 Block Page
 
 [![Latest Stable Version](https://poser.pugx.org/cyber-duck/silverstripe-block-page/v/stable)](https://packagist.org/packages/cyber-duck/silverstripe-block-page)
 [![Latest Unstable Version](https://poser.pugx.org/cyber-duck/silverstripe-block-page/v/unstable)](https://packagist.org/packages/cyber-duck/silverstripe-block-page)
@@ -7,55 +7,165 @@
 
 Author: [Andrew Mc Cormack](https://github.com/Andrew-Mc-Cormack)
 
-A modular approach to building pages in SilverStripe. Allows creation of pages in blocks allowing maximum flexibility for developers and CMS admins.
-  
 ## Features
 
-  - Customize block fields easily like you would any other DataObject
-  - Use repeating block components and unlimited block variations to create infinite layout variations
+A modular approach to building pages in SilverStripe which allows model based page components.
+  - Custom model based blocks
+  - No limit to number of blocks
+  - Easily block selection and editing
   - Use drag and drop GridField functionality to change and re-order blocks easily
-  - Tie in things like forms to blocks
-  
-## Guides
+  - Apply complex logic like forms to blocks
+  - Versioning across blocks
 
-  - [Installation](/docs/installation)
-    - [Composer](/docs/installation#composer)
-    - [Extension](/docs/installation#extension)
-  - [Creating Blocks](/docs/creating-blocks)
-    - [Block YML Configuration](/docs/creating-blocks#block-yml-configuration)
-    - [Block Page Configuration](/docs/creating-blocks#block-page-configuration)
-    - [Block DataObject](/docs/creating-blocks#block-dataobject)
-    - [Block Template](/docs/creating-blocks#block-template)
-    - [Restricting Blocks](/docs/creating-blocks#restricting-blocks)
+## Screen Shots
 
-## License
+  - [Block Selection](/docs/images/block-selection.jpg)
+
+## Installation
+
+Add the following to your composer.json file and run /dev/buid?flush=all
+
+```json
+{  
+    "require": {  
+        "cyber-duck/silverstripe-block-page": "4.0.*"
+    }
+}
+```
+
+## Block Setup
+
+### Add Extension and Template Loop
+
+The first step to adding block functionaliy is to apply the block page extension to your DataObject. This can be a normal DataObject or a Page.
+
+```yml
+Page:
+  extensions:
+    - BlockPageExtension
+```
+
+This will add a new tab to the CMS called content blocks.
+The second step is to apply the loop within your template for the blocks:
+
+```html
+<% loop ContentBlocks %>
+$Template
+<% end_loop %>
+```
+
+### Add Block Model and Template
+
+The next step is to create a block. A block consists of 2 parts; a DataObject and a .ss template. Both these should have the same name.
+
+  - EditorBlock.php
+  - EditorBlock.ss
+
+The model file can reside anywhere inside your code folder and should extend ContentBlock
+The base template for a block DataObject is as follows:
+
+```php
+use CyberDuck\BlockPage\Model\ContentBlock;
+use SilverStripe\Forms\HeaderField;
+use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
+
+class EditorBlock extends ContentBlock
+{
+	  private static $title = 'Editor';
+
+	  private static $description = 'Simple WYSIWYG editor block';
+    
+    private static $preview = '/themes/{YourTheme}/img/block/EditorBlock.png';
+
+  	private static $db = [
+		    'Content' => 'HTMLText'
+	  ];
+
+    public function getCMSFields()
+    {
+        $fields = parent::getCMSFields();
+
+        # HEADER - THIS FIELD IS REQUIRED
+        $fields->insertBefore(HeaderField::create('BlockHeader', self::$title), 'Title')
+
+        # FIELDS - YOUR FIELDS HERE
+        $fields->addFieldToTab('Root.Main', HTMLEditorField::create('Content')); // example field
+
+        return $fields;
+  }
+}
+```
+
+In the example above 1 custom block field is created called Content. You can replace this / add any other fields you want.
+There are 3 config properties used for a block used in the block selection screen:
+
+  - $title - Block title
+  - $description - Block description
+  - $preview - Preview image for the block. You can point this to an image folder in your theme or similar. 360w x 150h.
+
+Next in your theme folder create a folder at themes/{YourTheme}/templates/Block/ and add the EditorBlock.ss template within with the following content:
 
 ```
-Copyright (c) 2016, Andrew Mc Cormack <andrewm@cyber-duck.co.uk>.
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions
-are met:
-
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in
-      the documentation and/or other materials provided with the
-      distribution.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.
+<div>
+    $Content
+</div>
 ```
+
+### Add Block YML Config
+
+The final step to configuring your blocks is to set up the block YML config:
+
+```yml
+---
+Name: block config
+---
+CyberDuck\BlockPage\Model\ContentBlock:
+  blocks:
+    - EditorBlock
+  restrict:
+```
+
+Visit /dev/build?flush=all
+
+### Add Blocks in the CMS
+
+Go the the CMS and visit your Page / Object editing screen and you will see a new tab called Content Blocks.
+Here you can create new blocks, edit blocks, and re-order blocks.
+
+***
+
+## Extra Config
+
+### Restricting Blocks
+
+You can restrict certain block selections to a particular page type by passing a restrict option
+
+```yml
+CyberDuck\BlockPage\Model\ContentBlock:
+  blocks:
+    - EditorBlock
+    - HomeFeaturedBlock
+  restrict:
+    HomePage:
+      - HomeFeaturedBlock
+```
+
+### Creating a Block Holder Template
+
+If you wish to wrap all blocks within a certain template you can create a ContentBlock_holder.ss template within the /Block/ folder.
+
+```html
+<div id="block-$ID">
+    $Template
+</div>
+```
+
+The loop within your page needs to change slightly and call $TemplateHolder instead of template.
+
+```html
+<% loop ContentBlocks %>
+$TemplateHolder
+<% end_loop %>
+```
+
+## Todo
