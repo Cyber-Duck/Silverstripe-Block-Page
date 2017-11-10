@@ -77,9 +77,9 @@ class EditorBlock extends ContentBlock
     
     private static $preview = '/themes/{YourTheme}/img/block/EditorBlock.png';
 
-  	private static $db = [
+    private static $db = [
         'Content' => 'HTMLText'
-	  ];
+    ];
 
     public function getCMSFields()
     {
