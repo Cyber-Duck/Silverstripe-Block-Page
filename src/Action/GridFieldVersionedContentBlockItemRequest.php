@@ -59,11 +59,10 @@ class GridFieldVersionedContentBlockItemRequest extends VersionedGridFieldItemRe
         $request = Controller::curr()->getRequest();
         
         $class = $request->postVar('ContentBlock');
-
         $block = $class::create();
         $block->write();
 
-        $page = DataObject::get_by_id(Page::class, $request->postVar('PageID'));
+        $page = DataObject::get_by_id(Page::class, $request->postVar('BlockRelationID'));
         $page->ContentBlocks()->add($block);
         
         return Controller::curr()->redirect(Controller::join_links($this->gridField->Link('item'), $block->ID, 'edit'));    
