@@ -5,8 +5,10 @@ namespace CyberDuck\BlockPage\Extension;
 use Page;
 use CyberDuck\BlockPage\Action\GridFieldVersionedContentBlockItemRequest;
 use CyberDuck\BlockPage\Action\GridFieldVersionedDeleteAction;
+use CyberDuck\BlockPage\Action\GridFieldVersionedOrderableRows;
 use CyberDuck\BlockPage\Model\ContentBlock;
 use CyberDuck\BlockPage\Model\PageContentBlock;
+use SilverStripe\Control\Controller;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
@@ -40,17 +42,16 @@ class BlockPageExtension extends DataExtension
         $grid->getConfig()
             ->removeComponentsByType(GridFieldDeleteAction::class)
             ->addComponent(new GridFieldVersionedState(['Title']))
-            ->addComponent(new GridFieldOrderableRows('Sort'))
-            ->addComponent(new GridFieldVersionedDeleteAction(true));
+            ->addComponent(new GridFieldVersionedOrderableRows('Sort'))
+            ->addComponent(new GridFieldVersionedDeleteAction(true))
+            ->getComponentByType(GridFieldDetailForm::class)
+            ->setItemRequestClass(GridFieldVersionedContentBlockItemRequest::class);
 
-        $detail = $grid->getConfig()
-            ->getComponentByType(GridFieldDetailForm::class);
-        $detail->setItemRequestClass(GridFieldVersionedContentBlockItemRequest::class);
+        $detail = $grid->getConfig()->getComponentByType(GridFieldDetailForm::class);
 
-        $content = ContentBlock::create();
-        $content->PageID = $this->owner->ID;
-        $content->PageClass = $this->owner->ClassName;
-        $detail->setFields($content->getCMSFields());
+        $session = Controller::curr()->getRequest()->getSession();
+        $session->set('BlockRelationID', $this->owner->ID);
+        $session->set('BlockRelationClass', $this->owner->ClassName);
 
         $fields->addFieldToTab('Root.ContentBlocks', $grid);
     }

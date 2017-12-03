@@ -2,17 +2,12 @@
 
 namespace CyberDuck\BlockPage\Model;
 
-/*
-use SilverStripe\Forms\LiteralField;
-use SilverStripe\Forms\TextField;
-use SilverStripe\Security\Permission;
-*/
-
 use Page;
 use SilverStripe\Control\Controller;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridFieldAddNewButton;
 use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
 use SilverStripe\Forms\GridField\GridFieldDetailForm;
 use SilverStripe\Forms\GridField\GridFieldVersionedState;
@@ -60,20 +55,13 @@ class ContentBlock extends DataObject
     public function getCMSFields()
     {
         $fields = parent::getCMSFields();
+        $fields->removeByName('Pages');
         $fields->push(HiddenField::create('Sort'));
         
         if($this->getAction() == 'new') {
             return $this->getCMSSelectionFields($fields);
-        } else {
-            $grid = new GridField('Pages', 'Pages', $this->Pages(), GridFieldConfig_RelationEditor::create());
-            $grid->getConfig()
-                ->addComponent(new GridFieldVersionedState(['Title']))
-                ->getComponentByType(GridFieldDetailForm::class)
-                ->setItemRequestClass(VersionedGridFieldItemRequest::class);
-    
-            $fields->addFieldToTab('Root.Pages', $grid);
-            return $fields;
         }
+        return $fields;
     }
     
     public function getTemplateHolder()
@@ -96,16 +84,17 @@ class ContentBlock extends DataObject
     {
         $fields->removeByName('Root');
         // fields used in the inital selection request
-        $fields->push(HiddenField::create('PageID')->setValue($this->PageID));
-        $fields->push(HiddenField::create('PageClass')->setValue($this->PageClass));
+        $session = Controller::curr()->getRequest()->getSession();
+        $fields->push(HiddenField::create('BlockRelationID')->setValue($session->get('BlockRelationID')));
+        $fields->push(HiddenField::create('BlockRelationClass')->setValue($session->get('BlockRelationClass')));
 
         // create the selection tab and options
         $fields->push(TabSet::create('Root', Tab::create('Main')));
 
         $rules = (array) Config::inst()->get(ContentBlock::class, 'restrict');
         
-        if(array_key_exists($this->PageClass, $rules)) {
-            $classes = $rules[$this->PageClass];
+        if(array_key_exists($this->BlockRelationClass, $rules)) {
+            $classes = $rules[$this->BlockRelationClass];
         } else {
             $classes = (array) Config::inst()->get(ContentBlock::class, 'blocks');
         }
