@@ -2,6 +2,79 @@
 
 namespace CyberDuck\BlockPage\Action;
 
+use Page;
+use CyberDuck\BlockPage\Model\ContentBlock;
+use SilverStripe\Control\Controller;
+use SilverStripe\Forms\Form;
+use SilverStripe\Forms\FormAction;
+use SilverStripe\Forms\Tab;
+use SilverStripe\Forms\TabSet;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\Versioned\VersionedGridFieldItemRequest;
+
+class GridFieldVersionedContentBlockItemRequest extends VersionedGridFieldItemRequest
+{
+    private static $allowed_actions = [
+        'doSelect',
+        'doSelection',
+        'ItemEditForm'
+    ];
+
+    public function ItemEditForm()
+    {
+        $form = parent::ItemEditForm();
+        $actions = $form->Actions();
+
+        if($this->record->getAction() == 'new') {
+            // remove all actions and add the create action
+            foreach($actions as $action) {
+                $actions->remove($action);
+            }
+            $button = FormAction::create('doSelect');
+            $button->setTitle('Create')
+                ->setUseButtonTag(true)
+                ->setAttribute('data-icon', 'accept')
+                ->addExtraClass('btn action btn-primary font-icon-plus');
+            $actions->unshift($button);
+        } else {
+            $button = FormAction::create('doSelection');
+            $button->setTitle('New Block')
+                ->setAttribute('data-icon', 'accept');
+            $actions->unshift($button);
+            // set fields
+            $fields = $this->record->getCMSFields();
+            $fields->setForm($form);
+
+            $form->fields()->removeByName('Root');
+            $form->fields()->push(TabSet::create('Root', Tab::create('Main')));
+            $form->fields()->addFieldsToTab('Root.Main', $fields);
+            
+            $form->loadDataFrom($this->record);
+        }
+        return $form;
+    }
+
+    public function doSelect()
+    {
+        $request = Controller::curr()->getRequest();
+        
+        $class = $request->postVar('ContentBlock');
+
+        $block = $class::create();
+        $block->write();
+
+        $page = DataObject::get_by_id(Page::class, $request->postVar('PageID'));
+        $page->ContentBlocks()->add($block);
+        
+        return Controller::curr()->redirect(Controller::join_links($this->gridField->Link('item'), $block->ID, 'edit'));    
+    }
+
+    public function doSelection($data, Form $form)
+    {
+        return Controller::curr()->redirect(Controller::join_links($this->gridField->Link('item'), 'new'));
+    }
+}
+/*
 use SilverStripe\Control\Controller;
 use SilverStripe\Forms\Form;
 use SilverStripe\Forms\FormAction;
@@ -10,39 +83,11 @@ use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\ValidationResult;
 use SilverStripe\Versioned\Versioned;
 
-/**
- * CreateBlock_ItemRequest
- *
- * Request handler for creating new blocks in the CMS
- *
- * @package silverstripe-block-page
- * @license MIT License https://github.com/cyber-duck/silverstripe-block-page/blob/master/LICENSE
- * @author  <andrewm@cyber-duck.co.uk>
- **/
 class CreateBlock_ItemRequest extends GridFieldDetailForm_ItemRequest
 {
-    /**
-     * Allowe CMS block request actions 
-     *
-     * @since version 1.0.0
-     *
-     * @config array $allowed_actions
-     **/
     private static $allowed_actions = [
-        'ItemEditForm', 
-        'doCreate',
-        'doPublish',
-        'doUnpublish',
-        'doArchive'
+        'ItemEditForm'
     ];
-
-    /**
-     * CMS record form method
-     *
-     * @since version 1.0.0
-     *
-     * @return object
-     **/
     public function ItemEditForm()
     {
         $form = parent::ItemEditForm();
@@ -131,17 +176,6 @@ class CreateBlock_ItemRequest extends GridFieldDetailForm_ItemRequest
         }
         return $form;
     }
-
-    /**
-     * Handles the block create request and redirects to the new record
-     *
-     * @since version 1.0.0
-     *
-     * @param array  $data
-     * @param object $form
-     *
-     * @return void
-     **/
     public function doCreate($data, Form $form)
     {
         $request = Controller::curr()->getRequest();
@@ -156,16 +190,6 @@ class CreateBlock_ItemRequest extends GridFieldDetailForm_ItemRequest
         return Controller::curr()->redirect(Controller::join_links($this->gridField->Link('item'), $block->ID, 'edit'));    
     }
     
-    /**
-     * Handles the publish action
-     *
-     * @since version 4.0.0
-     *
-     * @param array  $data
-     * @param object $form
-     *
-     * @return void
-     **/
     public function doPublish($data, Form $form)
     {
         $record = $this->getRecord();
@@ -182,16 +206,6 @@ class CreateBlock_ItemRequest extends GridFieldDetailForm_ItemRequest
         return $this->redirectAfterSave(false);
     }
     
-    /**
-     * Handles the unpublish action
-     *
-     * @since version 4.0.0
-     *
-     * @param array  $data
-     * @param object $form
-     *
-     * @return void
-     **/
     public function doUnpublish($data, $form)
     {
         $record = $this->getRecord();
@@ -207,16 +221,6 @@ class CreateBlock_ItemRequest extends GridFieldDetailForm_ItemRequest
         return $this->redirectAfterSave(false);
     }
     
-    /**
-     * Set form action message
-     *
-     * @since version 4.0.0
-     *
-     * @param object $form
-     * @param string $message
-     *
-     * @return void
-     **/
     protected function setFormMessage($form, $message)
     {
         $form->sessionMessage($message, 'good', ValidationResult::CAST_HTML);
@@ -227,28 +231,7 @@ class CreateBlock_ItemRequest extends GridFieldDetailForm_ItemRequest
         }
     }
     
-    /**
-     * Redirects to block selection screen
-     *
-     * @since version 1.0.0
-     *
-     * @param array  $data
-     * @param object $form
-     *
-     * @return void
-     **/
-    public function doAddBlock($data, Form $form)
-    {
-        return Controller::curr()->redirect(Controller::join_links($this->gridField->Link('item'), 'new'));
-    }
     
-    /**
-     * Get the current record action
-     *
-     * @since version 1.0.0
-     *
-     * @return string
-     **/
     private function getAction()
     {
         $path = explode('/', Controller::curr()->getRequest()->getURL());
@@ -256,3 +239,4 @@ class CreateBlock_ItemRequest extends GridFieldDetailForm_ItemRequest
         return array_pop($path);
     }
 }
+*/

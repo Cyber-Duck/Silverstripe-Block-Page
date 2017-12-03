@@ -2,269 +2,128 @@
 
 namespace CyberDuck\BlockPage\Model;
 
-use SilverStripe\Control\Controller;
-use SilverStripe\Core\Config\Config;
-use SilverStripe\ORM\DataObject;
-use SilverStripe\ORM\FieldType\DBField;
-use SilverStripe\Forms\FieldList;
-use SilverStripe\Forms\HiddenField;
+/*
 use SilverStripe\Forms\LiteralField;
-use SilverStripe\Forms\OptionsetField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\Security\Permission;
+*/
 
-/**
- * ContentBlock
- *
- * Parent class for content blocks to inherit from
- *
- * @package silverstripe-block-page
- * @license MIT License https://github.com/cyber-duck/silverstripe-block-page/blob/master/LICENSE
- * @author  <andrewm@cyber-duck.co.uk>
- **/
+use Page;
+use SilverStripe\Control\Controller;
+use SilverStripe\Core\Config\Config;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
+use SilverStripe\Forms\GridField\GridFieldDetailForm;
+use SilverStripe\Forms\GridField\GridFieldVersionedState;
+use SilverStripe\Forms\HiddenField;
+use SilverStripe\Forms\OptionsetField;
+use SilverStripe\Forms\Tab;
+use SilverStripe\Forms\TabSet;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\FieldType\DBField;
+use SilverStripe\Versioned\Versioned;
+use SilverStripe\Versioned\VersionedGridFieldItemRequest;
+
 class ContentBlock extends DataObject
 {
-    /**
-     * Object database fields
-     *
-     * @since version 1.0.0
-     *
-     * @config array $db
-     **/
     private static $db = [
-        'Title'       => 'Varchar(512)',
-        'BlockType'   => 'Varchar(30)',
-        'BlockSort'   => 'Int',
-        'ParentClass' => 'Varchar(512)'
-    ];
-    
-    /**
-     * Object has one relations
-     *
-     * @since version 1.0.0
-     *
-     * @config array $has_one
-     **/
-    private static $has_one = [
-        'Parent' => DataObject::class
+        'Title' => 'Varchar(512)',
+        'Sort'  => 'Int'
     ];
 
-    /**
-     * Object CMS GridField summary fields
-     *
-     * @since version 1.0.0
-     *
-     * @config array $summary_fields
-     **/
-    private static $summary_fields = [
-        'BlockType'   => 'Type',
-        'BlockTitle'  => 'Title',
-        'BlockEdited' => 'Last Updated'
+    private static $belongs_many_many = [
+        'Pages' => 'Page.ContentBlocks',
     ];
 
-    /**
-     * Default sorting
-     *
-     * @since version 1.0.1
-     *
-     * @config string $default_sort
-     **/
-    private static $default_sort = 'BlockSort';
+    private static $owned_by = [
+        'Pages'
+    ];
 
-    /**
-     * Reference to current block parent
-     *
-     * @since version 1.1.0
-     *
-     * @config string $parent
-     **/
-    private static $parent;
+    private static $extensions = [
+        Versioned::class
+    ];
 
-    /**
-     * Table name
-     *
-     * @since version 4.0.0
-     *
-     * @config string $table_name
-     **/
+    private static $default_sort = 'Sort';
+
     private static $table_name = 'ContentBlock';
 
-    /**
-     * Summary field block type
-     *
-     * @since version 4.0.0
-     *
-     * @return string
-     **/
-    public function getBlockType()
-    {
-        return $this->config()->title;
-    }
+    private static $versioned_gridfield_extensions = true;
 
-    /**
-     * Summary field block title
-     *
-     * @since version 4.0.0
-     *
-     * @return string
-     **/
-    public function getBlockTitle()
-    {
-        return $this->Title;
-    }
+    private static $summary_fields = [
+        'ID'          => 'ID',
+        'ClassName'   => 'ClassName',
+        'Title'       => 'Title',
+        'Pages.Count' => 'Pages'
+    ];
 
-    /**
-     * Summary field last edited
-     *
-     * @since version 4.0.0
-     *
-     * @return string
-     **/
-    public function getBlockEdited()
-    {
-        return date('j M Y H:i:s ', strtotime($this->LastEdited)).' ';
-    }
-
-    /**
-     * Update the CMS fields with the block selector or normal fields
-     *
-     * @since version 1.0.0
-     *
-     * @return object
-     **/
     public function getCMSFields()
     {
         $fields = parent::getCMSFields();
-
-        $fields->addFieldToTab('Root.Main', TextField::create('Title'));
-
-        $fields->push(HiddenField::create('BlockSort'));
-        $fields->push(HiddenField::create('BlockType'));
-        $fields->push(HiddenField::create('ParentID'));
-        $fields->push(HiddenField::create('ParentClass'));
-
+        $fields->push(HiddenField::create('Sort'));
+        
         if($this->getAction() == 'new') {
-            return $this->getBlockSelectionFields($fields);
+            return $this->getCMSSelectionFields($fields);
+        } else {
+            $grid = new GridField('Pages', 'Pages', $this->Pages(), GridFieldConfig_RelationEditor::create());
+            $grid->getConfig()
+                ->addComponent(new GridFieldVersionedState(['Title']))
+                ->getComponentByType(GridFieldDetailForm::class)
+                ->setItemRequestClass(VersionedGridFieldItemRequest::class);
+    
+            $fields->addFieldToTab('Root.Pages', $grid);
+            return $fields;
         }
-        return $fields;
-    }
-
-    /**
-     * Get the new or edit action
-     *
-     * @since version 1.0.0
-     *
-     * @return string
-     **/
-    private function getAction()
-    {
-        $path = explode('/', Controller::curr()->getRequest()->getURL());
-
-        return array_pop($path);
-    }
-
-    /**
-     * Create the CMS block selector fields
-     *
-     * @since version 1.0.0
-     *
-     * @param object $fields
-     *
-     * @return object
-     **/
-    public function getBlockSelectionFields(FieldList $fields)
-    {
-        $fields->removeByName('Title');
-
-        $options = $this->getBlockSelectionOptions();
-        $checked = key(array_slice($options, 0, 1, true));
-
-        $fields->push(LiteralField::create(false, '<div id="PageType" class="cms-add-form">'));
-        $fields->push(OptionsetField::create('BlockType', false, $options, $checked));
-        $fields->push(LiteralField::create(false, '</div">'));
-        $fields->push(HiddenField::create('BlockStage')->setValue('choose'));
-        $fields->push(HiddenField::create('ParentID'));
-        $fields->push(HiddenField::create('ParentClass'));
-
-        return $fields;
-    }
-
-    /**
-     * Return an array of block type dropdown options HTML
-     *
-     * @since version 1.0.0
-     *
-     * @return array
-     **/
-    private function getBlockSelectionOptions()
-    {
-        $html = '<div class="form-check-overlay"></div>
-                 <div class="form-check-section">
-                    <div class="form-check-img">
-                        <img src="%s" height="150" width="360">
-                    </div>
-                    <strong class="form-check-title">%s</strong>
-                    <span class="form-check-description">%s</span>
-                 </div>';
-
-        $options = [];
-
-        foreach($this->getUnrestrictedBlocks() as $block) {
-            $option = sprintf($html,
-                Config::inst()->get($block, 'preview'),
-                Config::inst()->get($block, 'title'),
-                Config::inst()->get($block, 'description')
-            );
-            $options[$block] = DBField::create_field('HTMLText', $option);
-        }
-        return $options;
-    }
-
-    /**
-     * Return an array of blocks to choose from
-     *
-     * @since version 1.0.7
-     *
-     * @return array
-     **/
-    private function getUnrestrictedBlocks()
-    {
-        $rules = (array) Config::inst()->get(ContentBlock::class, 'restrict');
-
-        if(!empty($rules)) {
-            foreach($rules as $restricted => $blocks) {
-                if(!self::$parent) {
-                    self::$parent = $this->ParentClass;
-                }
-                if(self::$parent == $restricted) {
-                    return $blocks;
-                }
-            }
-        }
-        return (array) Config::inst()->get(ContentBlock::class, 'blocks');
     }
     
-    /**
-     * Render the block holder template
-     *
-     * @since version 4.0.0
-     *
-     * @return string
-     **/
     public function getTemplateHolder()
     {
         return $this->renderWith(['Block/ContentBlock_holder']);
     }
     
-    /**
-     * Render the individual block template
-     *
-     * @since version 4.0.0
-     *
-     * @return string
-     **/
     public function getTemplate()
     {   
         return $this->renderWith('Block/'.$this->ClassName);
+    }
+    
+    public function getAction()
+    {
+        $path = explode('/', Controller::curr()->getRequest()->getURL());
+        return array_pop($path);
+    }
+
+    private function getCMSSelectionFields(FieldList $fields)
+    {
+        $fields->removeByName('Root');
+        // fields used in the inital selection request
+        $fields->push(HiddenField::create('PageID')->setValue($this->PageID));
+        $fields->push(HiddenField::create('PageClass')->setValue($this->PageClass));
+
+        // create the selection tab and options
+        $fields->push(TabSet::create('Root', Tab::create('Main')));
+
+        $rules = (array) Config::inst()->get(ContentBlock::class, 'restrict');
+        
+        if(array_key_exists($this->PageClass, $rules)) {
+            $classes = $rules[$this->PageClass];
+        } else {
+            $classes = (array) Config::inst()->get(ContentBlock::class, 'blocks');
+        }
+        $options = [];
+        foreach($classes as $class) {
+            $options[$class] = DBField::create_field('HTMLText', Controller::curr()
+                ->customise([
+                    'Preview'     => $class::config()->get('preview'),
+                    'Title'       => $class::config()->get('title'),
+                    'Description' => $class::config()->get('description')
+                ])
+                ->renderWith('/Includes/ContentBlockOption')
+            );
+        }
+        $checked = key(array_slice($options, 0, 1, true));
+
+        $fields->addFieldToTab('Root.Main', OptionsetField::create('ContentBlock', false, $options, $checked));
+
+        return $fields;
     }
 }

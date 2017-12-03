@@ -2,94 +2,56 @@
 
 namespace CyberDuck\BlockPage\Extension;
 
-use CyberDuck\BlockPage\Action\CreateBlock_ItemRequest;
+use Page;
+use CyberDuck\BlockPage\Action\GridFieldVersionedContentBlockItemRequest;
+use CyberDuck\BlockPage\Action\GridFieldVersionedDeleteAction;
 use CyberDuck\BlockPage\Model\ContentBlock;
+use CyberDuck\BlockPage\Model\PageContentBlock;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\GridField\GridField;
-use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
 use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
+use SilverStripe\Forms\GridField\GridFieldDeleteAction;
 use SilverStripe\Forms\GridField\GridFieldDetailForm;
+use SilverStripe\Forms\GridField\GridFieldVersionedState;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\DataObject;
 use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
-use SilverStripe\Forms\GridField\GridFieldVersionedState;
 
-/**
- * BlockPageExtension
- *
- * Extension to turn a Page object into a Block Page
- *
- * @package silverstripe-block-page
- * @license MIT License https://github.com/cyber-duck/silverstripe-block-page/blob/master/LICENSE
- * @author  <andrewm@cyber-duck.co.uk>
- **/
 class BlockPageExtension extends DataExtension
 {    
-    /**
-     * Has many object relations
-     *
-     * @since version 1.0.0
-     *
-     * @config array $has_many
-     **/
-    private static $has_many = [
-        'ContentBlocks' => ContentBlock::class
-    ];
+    private static $db = [];
 
-    /**
-     * Update the page CMS fields with the content block grid field
-     *
-     * @since version 1.0.0
-     *
-     * @param object $fields
-     *
-     * @return object
-     **/
+    private static $many_many = [
+        'ContentBlocks' => [
+            'through' => PageContentBlock::class,
+            'from' => Page::class,
+            'to' => 'ContentBlock'
+        ]
+    ];
+    
+    private static $owns = [
+        'ContentBlocks'
+    ];
+    
     public function updateCMSFields(FieldList $fields) 
     {   
-        $blocks = $this->owner->ContentBlocks();
-        $editor = GridFieldConfig_RelationEditor::create()->addComponent(new GridFieldOrderableRows('BlockSort'));
-        $grid = new GridField('ContentBlocks', 'Content Blocks', $blocks, $editor);
-
+        $editor = GridFieldConfig_RelationEditor::create();
+        $grid = new GridField('ContentBlocks', 'Content Blocks', $this->owner->ContentBlocks(), $editor);
         $grid->getConfig()
-            ->removeComponentsByType(GridFieldAddExistingAutocompleter::class)
-            ->addComponent(new GridFieldVersionedState(['BlockEdited']))
-            ->getComponentByType(GridFieldDetailForm::class)
-            ->setItemRequestClass(CreateBlock_ItemRequest::class);
+            ->removeComponentsByType(GridFieldDeleteAction::class)
+            ->addComponent(new GridFieldVersionedState(['Title']))
+            ->addComponent(new GridFieldOrderableRows('Sort'))
+            ->addComponent(new GridFieldVersionedDeleteAction(true));
 
-        $detail = $grid->getConfig()->getComponentByType(GridFieldDetailForm::class);
+        $detail = $grid->getConfig()
+            ->getComponentByType(GridFieldDetailForm::class);
+        $detail->setItemRequestClass(GridFieldVersionedContentBlockItemRequest::class);
 
-        $content = new ContentBlock();
-        $content->ParentID = $this->owner->ID;
-        $content->ParentClass = $this->owner->ClassName;
+        $content = ContentBlock::create();
+        $content->PageID = $this->owner->ID;
+        $content->PageClass = $this->owner->ClassName;
         $detail->setFields($content->getCMSFields());
 
         $fields->addFieldToTab('Root.ContentBlocks', $grid);
-
-        return $fields;
-    }
-
-    public function onAfterDuplicate($new, $dowrite = null)
-    {
-        /*
-         * SiteTree duplicate will call this twice. Only the second call
-         * will have the ID set. See source of SiteTree:duplicate and
-         * DataObject::duplicate to see why.
-         *
-         * The simplest way to identify that we're in the second call is to
-         * use the above default value.
-         *
-         * It is possible in the future we will have to identify in another
-         * way by e.g. keeping a counter of calls or walking the backtrace.
-         *
-         */
-        if ($dowrite === null) {
-            $blocks = $this->owner->ContentBlocks();
-            foreach ($blocks as $block) {
-                $block = $block->duplicate(true);
-                $block->ParentID = $new->ID;
-                $block->write(false, false, true);
-            }
-        }
     }
 }
