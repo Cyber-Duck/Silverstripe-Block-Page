@@ -24,11 +24,7 @@ class BlockPageExtension extends DataExtension
     private static $db = [];
 
     private static $many_many = [
-        'ContentBlocks' => [
-            'through' => PageContentBlock::class,
-            'from' => Page::class,
-            'to' => 'ContentBlock'
-        ]
+        'ContentBlocks' => ContentBlock::class
     ];
     
     private static $owns = [

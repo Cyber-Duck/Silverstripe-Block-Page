@@ -23,12 +23,11 @@ use SilverStripe\Versioned\VersionedGridFieldItemRequest;
 class ContentBlock extends DataObject
 {
     private static $db = [
-        'Title' => 'Varchar(512)',
         'Sort'  => 'Int'
     ];
 
     private static $belongs_many_many = [
-        'Pages' => 'Page.ContentBlocks',
+        'Pages' => Page::class,
     ];
 
     private static $owned_by = [
@@ -46,11 +45,17 @@ class ContentBlock extends DataObject
     private static $versioned_gridfield_extensions = true;
 
     private static $summary_fields = [
+        'Thumbnail'   => '',
         'ID'          => 'ID',
         'ClassName'   => 'ClassName',
         'Title'       => 'Title',
         'Pages.Count' => 'Pages'
     ];
+
+    public function getThumbnail()
+    {
+        return DBField::create_field('HTMLText', sprintf('<img src="%s" height="20">', $this->config()->get('preview')));
+    }
 
     public function getCMSFields()
     {
@@ -60,6 +65,12 @@ class ContentBlock extends DataObject
         
         if($this->getAction() == 'new') {
             return $this->getCMSSelectionFields($fields);
+        } else {
+            $editor = GridFieldConfig_RelationEditor::create();
+            $grid = new GridField('Pages', 'Pages', $this->Pages(), $editor);
+            $grid->getConfig()
+                ->removeComponentsByType(GridFieldAddNewButton::class);
+            $fields->addFieldToTab('Root.Pages', $grid);
         }
         return $fields;
     }

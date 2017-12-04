@@ -32,7 +32,7 @@ class GridFieldVersionedDeleteAction extends GridFieldDeleteAction
                         _t(__CLASS__.'.EditPermissionsFailure', "No permission to unlink record")
                     );
                 }
-                $item->PageContentBlock->deleteFromStage(Versioned::LIVE);
+                //$item->PageContentBlock->deleteFromStage(Versioned::LIVE);
             }
         }
         // remove from stage
