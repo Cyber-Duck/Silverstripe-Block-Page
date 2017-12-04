@@ -1,5 +1,4 @@
 #Form_ItemEditForm_ContentBlock_Holder {
-    max-width: 1200px;
 
     .form__field-holder {
         flex: 100%;
@@ -13,6 +12,7 @@
             display: -ms-flexbox;
             display: -webkit-flex;
             display: flex;
+            max-width: 1200px;
             -webkit-flex-flow: row wrap;
 
             .form-check {
