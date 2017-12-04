@@ -1,0 +1,11 @@
+---
+Name: blockpage admin config
+---
+
+BlockAdmin:
+  managed_models:
+    - CyberDuck\BlockPage\Model\ContentBlock
+  menu_title: 'Page Blocks'
+  menu_priority: -1
+  menu_icon_class: 'font-icon-sitemap'
+  url_segment: 'block-admin'
