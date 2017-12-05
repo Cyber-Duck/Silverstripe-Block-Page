@@ -3,6 +3,7 @@
 namespace CyberDuck\BlockPage\Action;
 
 use Page;
+use CyberDuck\BlockPage\Admin\BlockAdmin;
 use CyberDuck\BlockPage\Model\ContentBlock;
 use SilverStripe\Control\Controller;
 use SilverStripe\Forms\Form;
@@ -62,9 +63,10 @@ class GridFieldVersionedContentBlockItemRequest extends VersionedGridFieldItemRe
         $block = $class::create();
         $block->write();
 
-        $page = DataObject::get_by_id(Page::class, $request->postVar('BlockRelationID'));
-        $page->ContentBlocks()->add($block);
-        
+        if(!Controller::curr() instanceof BlockAdmin) {
+            $page = DataObject::get_by_id(Page::class, $request->postVar('BlockRelationID'));
+            $page->ContentBlocks()->add($block);
+        }
         return Controller::curr()->redirect(Controller::join_links($this->gridField->Link('item'), $block->ID, 'edit'));    
     }
 

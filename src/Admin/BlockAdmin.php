@@ -1,6 +1,10 @@
 <?php
 
+namespace CyberDuck\BlockPage\Admin;
+
+use CyberDuck\BlockPage\Action\GridFieldVersionedContentBlockItemRequest;
 use SilverStripe\Admin\ModelAdmin;
+use SilverStripe\Forms\GridField\GridFieldDetailForm;
 use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
 
 class BlockAdmin extends ModelAdmin
@@ -12,7 +16,9 @@ class BlockAdmin extends ModelAdmin
             ->Fields()
             ->fieldByName($this->sanitiseClassName($this->modelClass))
             ->getConfig()
-            ->removeComponentsByType(GridFieldOrderableRows::class);
+            ->removeComponentsByType(GridFieldOrderableRows::class)
+            ->getComponentByType(GridFieldDetailForm::class)
+            ->setItemRequestClass(GridFieldVersionedContentBlockItemRequest::class);
 
         return $form;
     }
