@@ -5,7 +5,6 @@ namespace CyberDuck\BlockPage\Extension;
 use Page;
 use CyberDuck\BlockPage\Action\GridFieldVersionedContentBlockItemRequest;
 use CyberDuck\BlockPage\Action\GridFieldVersionedDeleteAction;
-use CyberDuck\BlockPage\Action\GridFieldVersionedOrderableRows;
 use CyberDuck\BlockPage\Model\ContentBlock;
 use CyberDuck\BlockPage\Model\PageContentBlock;
 use SilverStripe\Control\Controller;
@@ -27,6 +26,12 @@ class BlockPageExtension extends DataExtension
         'ContentBlocks' => ContentBlock::class
     ];
     
+    private static $many_many_extraFields = [
+        'ContentBlocks' => [
+            'SortBlock' => 'Int'
+        ]
+    ];
+    
     private static $owns = [
         'ContentBlocks'
     ];
@@ -38,7 +43,7 @@ class BlockPageExtension extends DataExtension
         $grid->getConfig()
             ->removeComponentsByType(GridFieldDeleteAction::class)
             ->addComponent(new GridFieldVersionedState(['Title']))
-            ->addComponent(new GridFieldVersionedOrderableRows('Sort'))
+            ->addComponent(new GridFieldOrderableRows('SortBlock'))
             ->addComponent(new GridFieldVersionedDeleteAction(true))
             ->getComponentByType(GridFieldDetailForm::class)
             ->setItemRequestClass(GridFieldVersionedContentBlockItemRequest::class);

@@ -22,9 +22,7 @@ use SilverStripe\Versioned\VersionedGridFieldItemRequest;
 
 class ContentBlock extends DataObject
 {
-    private static $db = [
-        'Sort'  => 'Int'
-    ];
+    private static $db = [];
 
     private static $belongs_many_many = [
         'Pages' => Page::class,
@@ -37,8 +35,6 @@ class ContentBlock extends DataObject
     private static $extensions = [
         Versioned::class
     ];
-
-    private static $default_sort = 'Sort';
 
     private static $table_name = 'ContentBlock';
 
@@ -61,7 +57,6 @@ class ContentBlock extends DataObject
     {
         $fields = parent::getCMSFields();
         $fields->removeByName('Pages');
-        $fields->push(HiddenField::create('Sort'));
         
         if($this->getAction() == 'new') {
             return $this->getCMSSelectionFields($fields);
