@@ -9,6 +9,7 @@ use CyberDuck\BlockPage\Model\ContentBlock;
 use CyberDuck\BlockPage\Model\PageContentBlock;
 use SilverStripe\Control\Controller;
 use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
 use SilverStripe\Forms\GridField\GridFieldDeleteAction;
@@ -38,22 +39,26 @@ class BlockPageExtension extends DataExtension
     
     public function updateCMSFields(FieldList $fields) 
     {   
-        $editor = GridFieldConfig_RelationEditor::create();
-        $grid = new GridField('ContentBlocks', 'Content Blocks', $this->owner->ContentBlocks(), $editor);
-        $grid->getConfig()
-            ->removeComponentsByType(GridFieldDeleteAction::class)
-            ->addComponent(new GridFieldVersionedState(['Title']))
-            ->addComponent(new GridFieldOrderableRows('SortBlock'))
-            ->addComponent(new GridFieldVersionedDeleteAction(true))
-            ->getComponentByType(GridFieldDetailForm::class)
-            ->setItemRequestClass(GridFieldVersionedContentBlockItemRequest::class);
-
-        $detail = $grid->getConfig()->getComponentByType(GridFieldDetailForm::class);
-
-        $session = Controller::curr()->getRequest()->getSession();
-        $session->set('BlockRelationID', $this->owner->ID);
-        $session->set('BlockRelationClass', $this->owner->ClassName);
-
-        $fields->addFieldToTab('Root.ContentBlocks', $grid);
+        if($this->owner->ID > 0) {
+            $editor = GridFieldConfig_RelationEditor::create();
+            $grid = new GridField('ContentBlocks', 'Content Blocks', $this->owner->ContentBlocks(), $editor);
+            $grid->getConfig()
+                ->removeComponentsByType(GridFieldDeleteAction::class)
+                ->addComponent(new GridFieldVersionedState(['Title']))
+                ->addComponent(new GridFieldOrderableRows('SortBlock'))
+                ->addComponent(new GridFieldVersionedDeleteAction(true))
+                ->getComponentByType(GridFieldDetailForm::class)
+                ->setItemRequestClass(GridFieldVersionedContentBlockItemRequest::class);
+    
+            $detail = $grid->getConfig()->getComponentByType(GridFieldDetailForm::class);
+    
+            $session = Controller::curr()->getRequest()->getSession();
+            $session->set('BlockRelationID', $this->owner->ID);
+            $session->set('BlockRelationClass', $this->owner->ClassName);
+    
+            $fields->addFieldToTab('Root.ContentBlocks', $grid);
+        } else {
+            $fields->addFieldToTab('Root.ContentBlocks', LiteralField::create(false, 'Please save this block to start adding items<br><br>'));
+        }
     }
 }
