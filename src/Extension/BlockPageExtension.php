@@ -14,6 +14,8 @@ use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
 use SilverStripe\Forms\GridField\GridFieldDeleteAction;
 use SilverStripe\Forms\GridField\GridFieldDetailForm;
+use SilverStripe\Forms\GridField\GridFieldPageCount;
+use SilverStripe\Forms\GridField\GridFieldPaginator;
 use SilverStripe\Forms\GridField\GridFieldVersionedState;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\DataObject;
@@ -44,6 +46,8 @@ class BlockPageExtension extends DataExtension
             $grid = new GridField('ContentBlocks', 'Content Blocks', $this->owner->ContentBlocks(), $editor);
             $grid->getConfig()
                 ->removeComponentsByType(GridFieldDeleteAction::class)
+                ->removeComponentsByType(GridFieldPageCount::class)
+                ->removeComponentsByType(GridFieldPaginator::class)
                 ->addComponent(new GridFieldVersionedState(['Title']))
                 ->addComponent(new GridFieldOrderableRows('SortBlock'))
                 ->addComponent(new GridFieldVersionedDeleteAction(true))
