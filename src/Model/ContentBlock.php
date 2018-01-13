@@ -22,6 +22,8 @@ use SilverStripe\Versioned\VersionedGridFieldItemRequest;
 
 class ContentBlock extends DataObject
 {
+    private static $table_name = 'ContentBlock';
+
     private static $db = [];
 
     private static $belongs_many_many = [
@@ -36,9 +38,11 @@ class ContentBlock extends DataObject
         Versioned::class
     ];
 
-    private static $table_name = 'ContentBlock';
-
     private static $versioned_gridfield_extensions = true;
+    
+    private static $singular_name = 'Content Block';
+    
+    private static $plural_name = 'Content Blocks';
 
     private static $summary_fields = [
         'Thumbnail'   => '',
