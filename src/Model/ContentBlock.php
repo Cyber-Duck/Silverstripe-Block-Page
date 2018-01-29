@@ -103,8 +103,8 @@ class ContentBlock extends DataObject
 
         $rules = (array) Config::inst()->get(ContentBlock::class, 'restrict');
         
-        if(array_key_exists($this->BlockRelationClass, $rules)) {
-            $classes = $rules[$this->BlockRelationClass];
+        if(array_key_exists($session->get('BlockRelationClass'), $rules)) {
+            $classes = $rules[$session->get('BlockRelationClass')];
         } else {
             $classes = (array) Config::inst()->get(ContentBlock::class, 'blocks');
         }
