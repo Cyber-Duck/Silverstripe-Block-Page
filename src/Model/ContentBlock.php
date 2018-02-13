@@ -81,7 +81,9 @@ class ContentBlock extends DataObject
     
     public function getTemplate()
     {   
-        return $this->renderWith('Block/'.$this->ClassName);
+        if($this->ClassName != ContentBlock::class) {
+            return $this->renderWith('Block/'.$this->ClassName);
+        }
     }
     
     public function getAction()
