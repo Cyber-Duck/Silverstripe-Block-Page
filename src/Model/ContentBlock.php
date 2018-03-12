@@ -17,10 +17,12 @@ use SilverStripe\Forms\Tab;
 use SilverStripe\Forms\TabSet;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBField;
+use SilverStripe\Security\Permission;
+use SilverStripe\Security\PermissionProvider;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\Versioned\VersionedGridFieldItemRequest;
 
-class ContentBlock extends DataObject
+class ContentBlock extends DataObject implements PermissionProvider
 {
     private static $table_name = 'ContentBlock';
 
@@ -126,5 +128,55 @@ class ContentBlock extends DataObject
         $fields->addFieldToTab('Root.Main', OptionsetField::create('ContentBlock', false, $options, $checked));
 
         return $fields;
+    }
+
+    public function providePermissions()
+    {
+        return [
+            'VIEW_CONTENT_BLOCKS' => [
+                'name' => 'View content blocks',
+                'help' => 'Allow viewing page content blocks',
+                'category' => 'Page - Content Blocks',
+                'sort' => 100
+            ],
+            'CREATE_CONTENT_BLOCKS' => [
+                'name' => 'Create content blocks',
+                'help' => 'Allow creating page content blocks',
+                'category' => 'Page - Content Blocks',
+                'sort' => 100
+            ],
+            'EDIT_CONTENT_BLOCKS' => [
+                'name' => 'Edit content blocks',
+                'help' => 'Allow editing page content blocks',
+                'category' => 'Page - Content Blocks',
+                'sort' => 100
+            ],
+            'DELETE_CONTENT_BLOCKS' => [
+                'name' => 'Delete content blocks',
+                'help' => 'Allow deleting page content blocks',
+                'category' => 'Page - Content Blocks',
+                'sort' => 100
+            ]
+        ];
+    }
+
+    public function canView($member = null, $context = []) 
+    {
+        return Permission::check('VIEW_CONTENT_BLOCKS', 'any', $member);
+    }
+
+    public function canCreate($member = null, $context = []) 
+    {
+        return Permission::check('CREATE_CONTENT_BLOCKS', 'any', $member);
+    }
+
+    public function canEdit($member = null, $context = []) 
+    {
+        return Permission::check('EDIT_CONTENT_BLOCKS', 'any', $member);
+    }
+
+    public function canDelete($member = null, $context = []) 
+    {
+        return Permission::check('DELETE_CONTENT_BLOCKS', 'any', $member);
     }
 }
