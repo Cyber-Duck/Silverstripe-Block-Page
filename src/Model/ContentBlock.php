@@ -48,8 +48,8 @@ class ContentBlock extends DataObject implements PermissionProvider
 
     private static $summary_fields = [
         'Thumbnail'   => '',
-        'ID'          => 'ID',
-        'ClassName'   => 'ClassName',
+        'ID'          => 'ID',        
+        'BlockType'   => 'Content type',
         'Title'       => 'Title',
         'Pages.Count' => 'Pages'
     ];
@@ -94,6 +94,11 @@ class ContentBlock extends DataObject implements PermissionProvider
         return array_pop($path);
     }
 
+    public function getBlockType()
+    {
+        return $this->owner->ClassName::config()->get('title');
+    }
+    
     private function getCMSSelectionFields(FieldList $fields)
     {
         $fields->removeByName('Root');
