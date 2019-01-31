@@ -2,6 +2,7 @@
 
 namespace CyberDuck\BlockPage\Extension;
 
+use Page;
 use SilverStripe\Core\Extension;
 use SilverStripe\ORM\DataObjectSchema;
 use SilverStripe\Core\Injector\Injector;
