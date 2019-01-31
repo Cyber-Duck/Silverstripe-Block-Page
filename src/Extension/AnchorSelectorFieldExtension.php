@@ -45,7 +45,7 @@ class AnchorSelectorFieldExtension extends Extension
 
                             if ($parseSuccess) {
                                 // Cleanup results and merge them to the results,
-                                $anchors = $anchors + array_values(array_unique(array_filter(array_merge($matches[3], $matches[5]))));
+                                $anchors = array_merge($anchors, array_values(array_unique(array_filter(array_merge($matches[3], $matches[5]))));
                             }
                         }
                     }
