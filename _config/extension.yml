@@ -1,0 +1,6 @@
+---
+Name: cyber-duck block page extensions
+---
+SilverStripe\CMS\Forms\AnchorSelectorField:
+  extensions:
+    - CyberDuck\BlockPage\Extension\AnchorSelectorFieldExtension
