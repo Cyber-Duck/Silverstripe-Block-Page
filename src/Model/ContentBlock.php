@@ -35,15 +35,10 @@ class ContentBlock extends DataObject implements PermissionProvider
         'Pages'
     ];
 
-    private static $extensions = [
-        Versioned::class
+    private static $searchable_fields = [
+        'ID',
+        'Title'
     ];
-
-    private static $versioned_gridfield_extensions = true;
-    
-    private static $singular_name = 'Content Block';
-    
-    private static $plural_name = 'Content Blocks';
 
     private static $summary_fields = [
         'Thumbnail'   => '',
@@ -53,10 +48,15 @@ class ContentBlock extends DataObject implements PermissionProvider
         'Pages.Count' => 'Pages'
     ];
     
-    private static $searchable_fields = [
-        'ID',
-        'Title'
+    private static $singular_name = 'Content Block';
+    
+    private static $plural_name = 'Content Blocks';
+
+    private static $extensions = [
+        Versioned::class
     ];
+
+    private static $versioned_gridfield_extensions = true;
 
     public function getThumbnail()
     {
