@@ -4,7 +4,7 @@ namespace CyberDuck\BlockPage\ORM;
 
 use SilverStripe\ORM\ManyManyList;
 
-class ContentBlockManyManyList extends ManyManyList
+class SortableManyManyList extends ManyManyList
 {
     /**
      * Adds a many many relation item
