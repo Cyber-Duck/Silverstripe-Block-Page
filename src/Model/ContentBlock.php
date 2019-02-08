@@ -26,7 +26,9 @@ class ContentBlock extends DataObject implements PermissionProvider
 {
     private static $table_name = 'ContentBlock';
 
-    private static $db = [];
+    private static $db = [
+        'Title' => 'Varchar(512)'
+    ];
 
     private static $belongs_many_many = [
         'Pages' => Page::class,
