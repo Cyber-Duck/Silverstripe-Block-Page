@@ -65,7 +65,7 @@ class EditorBlock extends ContentBlock
 
     private static $description = 'Simple WYSIWYG editor block';
     
-    private static $preview = '/themes/{YourTheme}/img/block/EditorBlock.png';
+    private static $preview = '/resources/themes/{YourTheme}/img/block/EditorBlock.png';
 
     private static $db = [
         'Content' => 'HTMLText'
