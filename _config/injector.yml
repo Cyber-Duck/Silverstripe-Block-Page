@@ -1,0 +1,6 @@
+---
+Name: blockpage injector config
+---
+SilverStripe\Core\Injector\Injector:
+  SilverStripe\ORM\ManyManyList:
+    class: CyberDuck\BlockPage\ORM\ContentBlockManyManyList
