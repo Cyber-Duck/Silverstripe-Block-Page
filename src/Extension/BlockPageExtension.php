@@ -32,6 +32,10 @@ class BlockPageExtension extends DataExtension
     private static $owns = [
         'ContentBlocks'
     ];
+
+    private static $many_many_sorting = [
+        'ContentBlocks' => 'SortBlock'
+    ];
     
     public function updateCMSFields(FieldList $fields)
     {
