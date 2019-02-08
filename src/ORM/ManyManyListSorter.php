@@ -11,20 +11,61 @@ class ManyManyListSorter
 {
     use Injectable;
 
-    private $list;
+    /**
+     * Many many list instance
+     *
+     * @var ManyManyList
+     */
+    protected $list;
 
-    private $item;
+    /**
+     * Passed many item
+     *
+     * @var int|object
+     */
+    protected $item;
 
-    private $itemID;
+    /**
+     * Passed many item ID
+     *
+     * @var int
+     */
+    protected $itemID;
 
-    private $parentTable;
+    /**
+     * Parent table name
+     *
+     * @var string
+     */
+    protected $parentTable;
 
-    private $parentNamespace;
+    /**
+     * Parent class namespace
+     *
+     * @var string
+     */
+    protected $parentNamespace;
 
-    private $relationName;
+    /**
+     * Many relation name
+     *
+     * @var string
+     */
+    protected $relationName;
 
-    private $column;
+    /**
+     * Many sorting column name
+     *
+     * @var string
+     */
+    protected $column;
 
+    /**
+     * Sets the required properties
+     *
+     * @param ManyManyList $list
+     * @param int|object $item
+     */
     public function __construct(ManyManyList $list, $item)
     {
         $this->list = $list;
@@ -32,6 +73,11 @@ class ManyManyListSorter
         $this->itemID = is_object($item) ? $item->ID : $item;
     }
 
+    /**
+     * Returns the sorting column and value in array format [column => value]
+     *
+     * @return void
+     */
     public function getColumn()
     {
         $table = explode('_', $this->list->getJoinTable());
@@ -75,12 +121,22 @@ class ManyManyListSorter
         return [$this->column => $max + 1];
     }
 
+    /**
+     * Returns the parent many_many_sorting config data
+     *
+     * @return void
+     */
     protected function getSortingConfig()
     {
         return (array) $this->parentNamespace::config()->get('many_many_sorting');
         ;
     }
 
+    /**
+     * Returns the parent many_many_extraFields config data
+     *
+     * @return void
+     */
     protected function getExtraFields()
     {
         return (array) DataObject::getSchema()
@@ -90,6 +146,11 @@ class ManyManyListSorter
             );
     }
 
+    /**
+     * Checks if the passed many many item has sorting applied
+     *
+     * @return boolean
+     */
     protected function hasSortingApplied()
     {
         $query = sprintf(

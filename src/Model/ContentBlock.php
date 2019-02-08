@@ -9,8 +9,6 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldAddNewButton;
 use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
-use SilverStripe\Forms\GridField\GridFieldDetailForm;
-use SilverStripe\Forms\GridField\GridFieldVersionedState;
 use SilverStripe\Forms\HiddenField;
 use SilverStripe\Forms\OptionsetField;
 use SilverStripe\Forms\Tab;
@@ -20,7 +18,6 @@ use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\Security\Permission;
 use SilverStripe\Security\PermissionProvider;
 use SilverStripe\Versioned\Versioned;
-use SilverStripe\Versioned\VersionedGridFieldItemRequest;
 
 class ContentBlock extends DataObject implements PermissionProvider
 {
@@ -50,7 +47,7 @@ class ContentBlock extends DataObject implements PermissionProvider
 
     private static $summary_fields = [
         'Thumbnail'   => '',
-        'ID'          => 'ID',        
+        'ID'          => 'ID',
         'BlockType'   => 'Content type',
         'Title'       => 'Title',
         'Pages.Count' => 'Pages'
@@ -71,7 +68,7 @@ class ContentBlock extends DataObject implements PermissionProvider
         $fields = parent::getCMSFields();
         $fields->removeByName('Pages');
         
-        if($this->getAction() == 'new') {
+        if ($this->getAction() == 'new') {
             return $this->getCMSSelectionFields($fields);
         } else {
             $editor = GridFieldConfig_RelationEditor::create();
@@ -89,8 +86,8 @@ class ContentBlock extends DataObject implements PermissionProvider
     }
     
     public function getTemplate()
-    {   
-        if($this->ClassName != ContentBlock::class) {
+    {
+        if ($this->ClassName != ContentBlock::class) {
             return $this->renderWith('Block/'.$this->ClassName);
         }
     }
@@ -119,14 +116,16 @@ class ContentBlock extends DataObject implements PermissionProvider
 
         $rules = (array) Config::inst()->get(ContentBlock::class, 'restrict');
         
-        if(array_key_exists($session->get('BlockRelationClass'), $rules)) {
+        if (array_key_exists($session->get('BlockRelationClass'), $rules)) {
             $classes = $rules[$session->get('BlockRelationClass')];
         } else {
             $classes = (array) Config::inst()->get(ContentBlock::class, 'blocks');
         }
         $options = [];
-        foreach($classes as $class) {
-            $options[$class] = DBField::create_field('HTMLText', Controller::curr()
+        foreach ($classes as $class) {
+            $options[$class] = DBField::create_field(
+                'HTMLText',
+                Controller::curr()
                 ->customise([
                     'Preview'     => $class::config()->get('preview'),
                     'Title'       => $class::config()->get('title'),
@@ -172,22 +171,22 @@ class ContentBlock extends DataObject implements PermissionProvider
         ];
     }
 
-    public function canView($member = null, $context = []) 
+    public function canView($member = null, $context = [])
     {
         return Permission::check('VIEW_CONTENT_BLOCKS', 'any', $member);
     }
 
-    public function canCreate($member = null, $context = []) 
+    public function canCreate($member = null, $context = [])
     {
         return Permission::check('CREATE_CONTENT_BLOCKS', 'any', $member);
     }
 
-    public function canEdit($member = null, $context = []) 
+    public function canEdit($member = null, $context = [])
     {
         return Permission::check('EDIT_CONTENT_BLOCKS', 'any', $member);
     }
 
-    public function canDelete($member = null, $context = []) 
+    public function canDelete($member = null, $context = [])
     {
         return Permission::check('DELETE_CONTENT_BLOCKS', 'any', $member);
     }

@@ -6,6 +6,16 @@ use SilverStripe\ORM\ManyManyList;
 
 class ContentBlockManyManyList extends ManyManyList
 {
+    /**
+     * Adds a many many relation item
+     *
+     * The custom ManyManyListSorter intecepts the action here and sets sorting
+     * if required
+     *
+     * @param int|object $item
+     * @param array $extraFields
+     * @return void
+     */
     public function add($item, $extraFields = [])
     {
         if (!is_array($extraFields)) {

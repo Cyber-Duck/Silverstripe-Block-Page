@@ -26,9 +26,9 @@ class GridFieldVersionedContentBlockItemRequest extends VersionedGridFieldItemRe
         $form = parent::ItemEditForm();
         $actions = $form->Actions();
 
-        if($this->record->getAction() == 'new') {
+        if ($this->record->getAction() == 'new') {
             // remove all actions and add the create action
-            foreach($actions as $action) {
+            foreach ($actions as $action) {
                 $actions->remove($action);
             }
             $button = FormAction::create('doSelect');
@@ -63,11 +63,11 @@ class GridFieldVersionedContentBlockItemRequest extends VersionedGridFieldItemRe
         $block = $class::create();
         $block->write();
 
-        if(!Controller::curr() instanceof BlockAdmin) {
+        if (!Controller::curr() instanceof BlockAdmin) {
             $page = DataObject::get_by_id(Page::class, $request->postVar('BlockRelationID'));
             $page->ContentBlocks()->add($block);
         }
-        return Controller::curr()->redirect(Controller::join_links($this->gridField->Link('item'), $block->ID, 'edit'));    
+        return Controller::curr()->redirect(Controller::join_links($this->gridField->Link('item'), $block->ID, 'edit'));
     }
 
     public function doSelection($data, Form $form)
