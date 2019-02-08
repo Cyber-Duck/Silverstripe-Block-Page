@@ -55,6 +55,11 @@ class ContentBlock extends DataObject implements PermissionProvider
         'Title'       => 'Title',
         'Pages.Count' => 'Pages'
     ];
+    
+    private static $searchable_fields = [
+        'ID',
+        'Title'
+    ];
 
     public function getThumbnail()
     {
