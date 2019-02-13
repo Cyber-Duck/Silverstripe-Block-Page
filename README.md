@@ -157,6 +157,28 @@ $TemplateHolder
 Go the the CMS and visit your Page / Object editing screen and you will see a new tab called Content Blocks.
 Here you can create new blocks, edit blocks, and re-order blocks.
 
+### Sorting 
+
+The module includes a feature to append the last created item to the bottom of a sortable gridifeld list. 
+
+Add many_many_sorting to your class config specifying the relationship and many many sort column.
+
+```php
+private static $many_many = [
+    'ContentBlocks' => ContentBlock::class
+];
+
+private static $many_many_extraFields = [
+    'ContentBlocks' => [
+        'SortBlock' => 'Int'
+    ]
+];
+
+private static $many_many_sorting = [
+    'ContentBlocks' => 'SortBlock'
+];
+``
+
 ***
 
 ## Todo
