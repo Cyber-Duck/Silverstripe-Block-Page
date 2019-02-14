@@ -41,18 +41,25 @@ This will add a new tab to the CMS called content blocks.
 ```yml
 Page:
   extensions:
-    - BlockPageExtension
+    - CyberDuck\BlockPage\Extension\BlockPageExtension
 ```
 
 ### Add Block Model
 
-The next step is to create a block. A block consists of 2 parts; a DataObject and a .ss template. Both these should have the same name.
+A block consists of 2 parts; a DataObject and a .ss template. Both these should have the same name.
 
   - EditorBlock.php
   - EditorBlock.ss
 
-The model file can reside anywhere inside your code folder and should extend ContentBlock
-The base template for a block DataObject is as follows:
+There are 3 config properties for a block used in the block selection screen:
+
+  - $title - Block title
+  - $description - Block description
+  - $preview - Preview image for the block. You can point this to an image folder in your theme or similar. 360w x 150h.
+
+The DataObject file can reside anywhere inside your code folder and should extend CyberDuck\BlockPage\Model\ContentBlock.
+Confgure a block in the same way as any other DataObject.
+All content blocks have by a Title field by default
 
 ```php
 use CyberDuck\BlockPage\Model\ContentBlock;
@@ -68,27 +75,20 @@ class EditorBlock extends ContentBlock
     private static $preview = '/resources/themes/{YourTheme}/img/block/EditorBlock.png';
 
     private static $db = [
-        'Content' => 'HTMLText'
+        'Content' => 'HTMLText' // example field
     ];
 
     public function getCMSFields()
     {
         $fields = parent::getCMSFields();
 
-        # FIELDS - YOUR FIELDS HERE
+        # YOUR FIELDS
         $fields->addFieldToTab('Root.Main', HTMLEditorField::create('Content')); // example field
 
         return $fields;
     }
 }
 ```
-
-In the example above 1 custom block field is created called Content. You can replace this / add any other fields you want.
-There are 3 config properties used for a block used in the block selection screen:
-
-  - $title - Block title
-  - $description - Block description
-  - $preview - Preview image for the block. You can point this to an image folder in your theme or similar. 360w x 150h.
 
 ### Add Block template
 
