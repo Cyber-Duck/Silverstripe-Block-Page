@@ -177,7 +177,7 @@ private static $many_many_extraFields = [
 private static $many_many_sorting = [
     'ContentBlocks' => 'SortBlock'
 ];
-``
+```
 
 ***
 
