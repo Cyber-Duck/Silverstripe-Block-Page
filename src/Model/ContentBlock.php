@@ -25,7 +25,7 @@ use SilverStripe\Security\PermissionProvider;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\Versioned\VersionedGridFieldItemRequest;
 
-class ContentBlock extends DataObject
+class ContentBlock extends DataObject implements PermissionProvider
 {
     private static $table_name = 'ContentBlock';
 
