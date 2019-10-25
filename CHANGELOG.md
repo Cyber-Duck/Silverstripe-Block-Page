@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## Version 4.4
+
+25th October 2019
+
+Updated to work with the latest SS version 4.4.4 due to security issue.
+
+### Changed
+
+  - Block search for SS v4.4.4
+
 ## Version 1.1.0
 
 31st January 2017

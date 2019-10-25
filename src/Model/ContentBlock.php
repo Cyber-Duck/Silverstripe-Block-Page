@@ -2,6 +2,7 @@
 
 namespace CyberDuck\BlockPage\Model;
 
+use SilverStripe\ORM\Queries\SQLSelect;
 use Page;
 use SilverStripe\Control\Controller;
 use SilverStripe\Core\Config\Config;
@@ -9,17 +10,22 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldAddNewButton;
 use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
+use SilverStripe\Forms\GridField\GridFieldDetailForm;
+use SilverStripe\Forms\GridField\GridFieldVersionedState;
 use SilverStripe\Forms\HiddenField;
 use SilverStripe\Forms\OptionsetField;
 use SilverStripe\Forms\Tab;
+use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\TabSet;
+use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\Security\Permission;
 use SilverStripe\Security\PermissionProvider;
 use SilverStripe\Versioned\Versioned;
+use SilverStripe\Versioned\VersionedGridFieldItemRequest;
 
-class ContentBlock extends DataObject implements PermissionProvider
+class ContentBlock extends DataObject
 {
     private static $table_name = 'ContentBlock';
 
@@ -35,28 +41,57 @@ class ContentBlock extends DataObject implements PermissionProvider
         'Pages'
     ];
 
-    private static $searchable_fields = [
-        'ID',
-        'Title'
-    ];
-
-    private static $summary_fields = [
-        'Thumbnail'   => '',
-        'ID'          => 'ID',
-        'BlockType'   => 'Content type',
-        'Title'       => 'Title',
-        'Pages.Count' => 'Pages'
-    ];
-    
-    private static $singular_name = 'Content Block';
-    
-    private static $plural_name = 'Content Blocks';
-
     private static $extensions = [
         Versioned::class
     ];
 
     private static $versioned_gridfield_extensions = true;
+
+    private static $singular_name = 'Content Block';
+
+    private static $plural_name = 'Content Blocks';
+
+    private static $summary_fields = [
+        'Thumbnail'   => '',
+        'ID'          => 'ID',
+        'BlockType'   => 'Block type',
+        'Title'       => 'Title',
+        'Pages.Count' => 'Pages'
+    ];
+
+    private static $searchable_db = [
+        'Title',
+        'ClassName'
+    ];
+
+    public function searchableFields()
+    {
+
+        $query = SQLSelect::create()
+            ->setSelect(['ClassName'])
+            ->setFrom('ContentBlock')
+            ->setGroupBy('ClassName');
+
+        $types = array();
+        foreach ($query->execute() as $row) {
+            $types[$row['ClassName']] = $row['ClassName'];
+        }
+
+        return [
+            'Title' => [
+                'filter' => 'PartialMatchFilter',
+                'title' => 'Title',
+                'field' => TextField::class,
+            ],
+            'ClassName' => [
+                'filter' => 'ExactMatchFilter',
+                'title' => 'Class',
+                'field' => DropdownField::create('ClassName')
+                    ->setSource($types)
+                    ->setEmptyString('-- Any Class --')
+            ],
+        ];
+    }
 
     public function getThumbnail()
     {
@@ -67,8 +102,8 @@ class ContentBlock extends DataObject implements PermissionProvider
     {
         $fields = parent::getCMSFields();
         $fields->removeByName('Pages');
-        
-        if ($this->getAction() == 'new') {
+
+        if($this->getAction() == 'new') {
             return $this->getCMSSelectionFields($fields);
         } else {
             $editor = GridFieldConfig_RelationEditor::create();
@@ -79,19 +114,19 @@ class ContentBlock extends DataObject implements PermissionProvider
         }
         return $fields;
     }
-    
+
     public function getTemplateHolder()
     {
         return $this->renderWith(['Block/ContentBlock_holder']);
     }
-    
+
     public function getTemplate()
     {
-        if ($this->ClassName != ContentBlock::class) {
+        if($this->ClassName != ContentBlock::class) {
             return $this->renderWith('Block/'.$this->ClassName);
         }
     }
-    
+
     public function getAction()
     {
         $path = explode('/', Controller::curr()->getRequest()->getURL());
@@ -102,7 +137,7 @@ class ContentBlock extends DataObject implements PermissionProvider
     {
         return $this->owner->ClassName::config()->get('title');
     }
-    
+
     private function getCMSSelectionFields(FieldList $fields)
     {
         $fields->removeByName('Root');
@@ -115,17 +150,15 @@ class ContentBlock extends DataObject implements PermissionProvider
         $fields->push(TabSet::create('Root', Tab::create('Main')));
 
         $rules = (array) Config::inst()->get(ContentBlock::class, 'restrict');
-        
-        if (array_key_exists($session->get('BlockRelationClass'), $rules)) {
+
+        if(array_key_exists($session->get('BlockRelationClass'), $rules)) {
             $classes = $rules[$session->get('BlockRelationClass')];
         } else {
             $classes = (array) Config::inst()->get(ContentBlock::class, 'blocks');
         }
         $options = [];
-        foreach ($classes as $class) {
-            $options[$class] = DBField::create_field(
-                'HTMLText',
-                Controller::curr()
+        foreach($classes as $class) {
+            $options[$class] = DBField::create_field('HTMLText', Controller::curr()
                 ->customise([
                     'Preview'     => $class::config()->get('preview'),
                     'Title'       => $class::config()->get('title'),
