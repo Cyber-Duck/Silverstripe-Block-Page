@@ -5,6 +5,7 @@ namespace CyberDuck\BlockPage\Model;
 use Page;
 use SilverStripe\Control\Controller;
 use SilverStripe\Core\Config\Config;
+use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldAddNewButton;
@@ -48,11 +49,22 @@ class ContentBlock extends DataObject implements PermissionProvider
 
     private static $summary_fields = [
         'Thumbnail'   => '',
-        'ID'          => 'ID',        
-        'BlockType'   => 'Content type',
+        'ID'          => 'ID',
+        'ClassName'   => 'Content type',
         'Title'       => 'Title',
         'Pages.Count' => 'Pages'
     ];
+
+    public function searchableFields()
+    {
+        return [
+            'BlockType' => [
+                'filter' => 'ExactMatchFilter',
+                'title' => 'Content Type',
+                'field' => DropdownField::create('ClassName')->setSource(ContentBlock::get()->map('ClassName', 'ClassName'))->setEmptyString('-- Content Type --')
+            ]
+        ];
+    }
 
     public function getThumbnail()
     {
