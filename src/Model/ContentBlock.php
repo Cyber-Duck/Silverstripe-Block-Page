@@ -58,7 +58,7 @@ class ContentBlock extends DataObject implements PermissionProvider
     public function searchableFields()
     {
         return [
-            'BlockType' => [
+            'ClassName' => [
                 'filter' => 'ExactMatchFilter',
                 'title' => 'Content Type',
                 'field' => DropdownField::create('ClassName')->setSource(ContentBlock::get()->map('ClassName', 'ClassName'))->setEmptyString('-- Content Type --')
