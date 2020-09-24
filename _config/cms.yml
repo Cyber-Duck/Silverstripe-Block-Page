@@ -3,8 +3,8 @@ Name: block page cms config
 ---
 SilverStripe\Admin\LeftAndMain:
   extra_requirements_css:
-    - _resources/vendor/cyber-duck/silverstripe-block-page/assets/css/block-page.css
+    - cyber-duck/silverstripe-block-page:assets/css/block-page.css
   extra_requirements_javascript:
-    - _resources/vendor/cyber-duck/silverstripe-block-page/assets/js/block-page.js
+    - cyber-duck/silverstripe-block-page:assets/js/block-page.js
   admin_themes:
    - 'silverstripe-block-page'
