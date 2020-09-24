@@ -66,16 +66,31 @@ class ContentBlock extends DataObject implements PermissionProvider
         ];
     }
 
+    /**
+     * @return DBField
+     */
     public function getThumbnail()
     {
-        return DBField::create_field('HTMLText', sprintf('<img src="%s" height="20">', $this->config()->get('preview')));
+        return DBField::create_field('HTMLText', sprintf('<img src="%s" height="20">', $this->getPreviewImagePath()));
+    }
+
+    /**
+     * @return string
+     */
+    protected function getPreviewImagePath()
+    {
+        $previewImagePath = $this->config()->get('preview');
+
+        $this->extend('updatePreviewImagePath', $previewImagePath);
+
+        return $previewImagePath;
     }
 
     public function getCMSFields()
     {
         $fields = parent::getCMSFields();
         $fields->removeByName('Pages');
-        
+
         if($this->getAction() == 'new') {
             return $this->getCMSSelectionFields($fields);
         } else {
