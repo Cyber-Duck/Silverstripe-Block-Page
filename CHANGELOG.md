@@ -1,7 +1,17 @@
 #Change Log
 
 All notable changes to this project will be documented in this file.
+## Version 4.6.1
+24th September 2020
 
+### Added
+  - Added new function getPreviewImagePath which enables you to update the preview 
+  image path depending on your project's folder setup or simply specify the `preview` class config value with 
+  the relative path to the preview image for the respective content block.
+  
+### Changed
+  - Updated extra requirements path for css and js in cms.yml
+    
 ## Version 1.1.0
 
 31st January 2017
