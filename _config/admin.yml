@@ -9,4 +9,3 @@ CyberDuck\BlockPage\Admin\BlockAdmin:
   menu_priority: -1
   menu_icon_class: 'font-icon-sitemap'
   url_segment: 'block-admin'
-  page_length: 500
