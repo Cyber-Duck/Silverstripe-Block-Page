@@ -1,6 +1,13 @@
 #Change Log
 
 All notable changes to this project will be documented in this file.
+
+## Version 4.6.2
+14th October 2020
+
+### Removed
+  - Removed page_length setting to allow default page-length in ModelAdmin (current default: 30 records per page)
+
 ## Version 4.6.1
 24th September 2020
 
