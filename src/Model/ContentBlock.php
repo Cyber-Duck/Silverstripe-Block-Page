@@ -123,7 +123,8 @@ class ContentBlock extends DataObject implements PermissionProvider
 
     public function getBlockType()
     {
-        return $this->owner->ClassName::config()->get('title');
+        $className = $this->owner->ClassName;
+        return $className::config()->get('title');
     }
     
     private function getCMSSelectionFields(FieldList $fields)
@@ -148,7 +149,7 @@ class ContentBlock extends DataObject implements PermissionProvider
         foreach($classes as $class) {
             $options[$class] = DBField::create_field('HTMLText', Controller::curr()
                 ->customise([
-                    'Preview'     => $class::config()->get('preview'),
+                    'Preview'     => singleton($class)->getPreviewImagePath(),
                     'Title'       => $class::config()->get('title'),
                     'Description' => $class::config()->get('description')
                 ])

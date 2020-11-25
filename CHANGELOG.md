@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+
+## Version 4.6.3
+25th November 2020
+
+### Changed
+  - Updated Preview Path for blocks to show correct preview image in CMS
+
 ## Version 4.6.2
 14th October 2020
 
