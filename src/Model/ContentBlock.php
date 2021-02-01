@@ -160,6 +160,8 @@ class ContentBlock extends DataObject implements PermissionProvider
 
         $fields->addFieldToTab('Root.Main', OptionsetField::create('ContentBlock', false, $options, $checked));
 
+        $this->extend('updateCMSSelectionFields', $fields);
+
         return $fields;
     }
 
