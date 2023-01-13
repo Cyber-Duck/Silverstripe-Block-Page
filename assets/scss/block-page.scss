@@ -92,8 +92,6 @@
             &:hover {
                 transform:scale(300%);
                 box-shadow: 0 0.2em 1em rgba(0, 0, 0, 0.2);
-                position: relative;
-                z-index: 10;
                 transition-delay: 0.3s;
             }
         }
