@@ -71,7 +71,7 @@ use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
 
 class EditorBlock extends ContentBlock
 {
-    private static $title = 'Editor';
+    private static $singular_name = 'Editor';
 
     private static $description = 'Simple WYSIWYG editor block';
     
@@ -86,7 +86,7 @@ class EditorBlock extends ContentBlock
         $fields = parent::getCMSFields();
 
         # HEADER - THIS FIELD IS REQUIRED
-        $fields->insertBefore(HeaderField::create('BlockHeader', self::$title), 'Title')
+        $fields->insertBefore(HeaderField::create('BlockHeader', self::i18n_singular_name()), 'Title')
 
         # FIELDS - YOUR FIELDS HERE
         $fields->addFieldToTab('Root.Main', HTMLEditorField::create('Content')); // example field
@@ -99,7 +99,7 @@ class EditorBlock extends ContentBlock
 In the example above 1 custom block field is created called Content. You can replace this / add any other fields you want.
 There are 3 config properties used for a block used in the block selection screen:
 
-  - $title - Block title
+  - $singular_name - Block title
   - $description - Block description
   - $preview - Preview image for the block. You can point this to an image folder in your theme or similar. 360w x 150h.
 
