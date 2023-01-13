@@ -74,3 +74,28 @@
         }
     }
 }
+
+
+//block grid styles
+.table {
+    .col-Thumbnail {
+        padding: 0;
+        vertical-align: middle;
+        width: 0;
+
+        img {
+            height: 40px;
+            transform-origin: 0% 50%;
+            transition: 0.2s ease-in-out;
+            transition-property: transform, box-shadow;
+
+            &:hover {
+                transform:scale(300%);
+                box-shadow: 0 0.2em 1em rgba(0, 0, 0, 0.2);
+                position: relative;
+                z-index: 10;
+                transition-delay: 0.3s;
+            }
+        }
+    }
+}
