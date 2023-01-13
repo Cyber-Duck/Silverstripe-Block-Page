@@ -22,16 +22,4 @@ class BlockAdmin extends ModelAdmin
 
         return $form;
     }
-
-    public function getList()
-    {
-        $list = parent::getList();
-        $requestFilters = $this->getRequest()->requestVar('filter');
-        $filters = [];
-        if (isset($requestFilters['CyberDuck-BlockPage-Model-ContentBlock']['ClassName']) and ! empty($requestFilters['CyberDuck-BlockPage-Model-ContentBlock']['ClassName'])) {
-            $filters['ClassName'] = $requestFilters['CyberDuck-BlockPage-Model-ContentBlock']['ClassName'];
-        }
-
-        return $list->filter($filters);
-    }
 }
