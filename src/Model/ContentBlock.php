@@ -12,9 +12,8 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldAddNewButton;
 use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
-use SilverStripe\Forms\GridField\GridFieldDetailForm;
-use SilverStripe\Forms\GridField\GridFieldVersionedState;
 use SilverStripe\Forms\HiddenField;
+use SilverStripe\Forms\NumericField;
 use SilverStripe\Forms\OptionsetField;
 use SilverStripe\Forms\Tab;
 use SilverStripe\Forms\TabSet;
@@ -23,7 +22,6 @@ use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\Security\Permission;
 use SilverStripe\Security\PermissionProvider;
 use SilverStripe\Versioned\Versioned;
-use SilverStripe\Versioned\VersionedGridFieldItemRequest;
 
 class ContentBlock extends DataObject implements PermissionProvider
 {
@@ -79,7 +77,8 @@ class ContentBlock extends DataObject implements PermissionProvider
 
 		$fields['ID'] = [
 			'filter' => 'ExactMatchFilter',
-			'title' => 'ID'
+			'title' => 'ID',
+            'field' => NumericField::create('ID')
 		];
 
 		$fields['ClassName'] = [

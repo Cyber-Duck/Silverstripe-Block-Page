@@ -6,6 +6,7 @@ use CyberDuck\BlockPage\Action\GridFieldVersionedContentBlockItemRequest;
 use CyberDuck\BlockPage\Model\ContentBlock;
 use SilverStripe\Control\Controller;
 use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
@@ -13,6 +14,7 @@ use SilverStripe\Forms\GridField\GridFieldDetailForm;
 use SilverStripe\Forms\GridField\GridFieldPageCount;
 use SilverStripe\Forms\GridField\GridFieldPaginator;
 use SilverStripe\ORM\DataExtension;
+use Symbiote\GridFieldExtensions\GridFieldAddExistingSearchButton;
 use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
 
 class BlockPageExtension extends DataExtension
@@ -39,9 +41,15 @@ class BlockPageExtension extends DataExtension
             $editor = GridFieldConfig_RelationEditor::create();
             $grid = new GridField('ContentBlocks', 'Content Blocks', $this->owner->ContentBlocks(), $editor);
             $grid->getConfig()
-                ->removeComponentsByType(GridFieldPageCount::class)
-                ->removeComponentsByType(GridFieldPaginator::class)
-                ->addComponent(new GridFieldOrderableRows('SortBlock'))
+                ->removeComponentsByType([
+                    GridFieldPageCount::class,
+                    GridFieldPaginator::class,
+                    GridFieldAddExistingAutocompleter::class
+                ])
+                ->addComponents([
+                    new GridFieldOrderableRows('SortBlock'),
+                    new GridFieldAddExistingSearchButton()
+                ])
                 ->getComponentByType(GridFieldDetailForm::class)
                 ->setItemRequestClass(GridFieldVersionedContentBlockItemRequest::class);
     
