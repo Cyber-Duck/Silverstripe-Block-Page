@@ -10,6 +10,7 @@ use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
 use SilverStripe\Forms\GridField\GridFieldAddNewButton;
 use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
 use SilverStripe\Forms\HiddenField;
@@ -22,6 +23,7 @@ use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\Security\Permission;
 use SilverStripe\Security\PermissionProvider;
 use SilverStripe\Versioned\Versioned;
+use Symbiote\GridFieldExtensions\GridFieldAddExistingSearchButton;
 
 class ContentBlock extends DataObject implements PermissionProvider
 {
@@ -119,6 +121,12 @@ class ContentBlock extends DataObject implements PermissionProvider
 			return $this->getCMSSelectionFields($fields);
 		} else {
 			$editor = GridFieldConfig_RelationEditor::create();
+            $editor->removeComponentsByType([
+                GridFieldAddExistingAutocompleter::class
+            ])->addComponents([
+                new GridFieldAddExistingSearchButton()
+            ]);
+
 			$grid = new GridField('Pages', 'Pages', $this->Pages(), $editor);
 			$grid->getConfig()
 				->removeComponentsByType(GridFieldAddNewButton::class);
