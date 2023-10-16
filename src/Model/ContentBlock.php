@@ -117,7 +117,7 @@ class ContentBlock extends DataObject implements PermissionProvider
 		$fields = parent::getCMSFields();
 		$fields->removeByName('Pages');
 
-		if($this->getAction() == 'new') {
+		if($this->getAction() == 'new' && $this->ClassName === ContentBlock::class) {
 			return $this->getCMSSelectionFields($fields);
 		} else {
 			$editor = GridFieldConfig_RelationEditor::create();
