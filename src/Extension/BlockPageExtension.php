@@ -2,7 +2,6 @@
 
 namespace CyberDuck\BlockPage\Extension;
 
-use CyberDuck\BlockPage\Action\GridFieldVersionedContentBlockItemRequest;
 use CyberDuck\BlockPage\Model\ContentBlock;
 use SilverStripe\Control\Controller;
 use SilverStripe\Forms\FieldList;
@@ -10,7 +9,6 @@ use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
-use SilverStripe\Forms\GridField\GridFieldDetailForm;
 use SilverStripe\Forms\GridField\GridFieldPageCount;
 use SilverStripe\Forms\GridField\GridFieldPaginator;
 use SilverStripe\ORM\DataExtension;
@@ -49,12 +47,8 @@ class BlockPageExtension extends DataExtension
                 ->addComponents([
                     new GridFieldOrderableRows('SortBlock'),
                     new GridFieldAddExistingSearchButton()
-                ])
-                ->getComponentByType(GridFieldDetailForm::class)
-                ->setItemRequestClass(GridFieldVersionedContentBlockItemRequest::class);
-    
-            $detail = $grid->getConfig()->getComponentByType(GridFieldDetailForm::class);
-    
+                ]);
+
             $session = Controller::curr()->getRequest()->getSession();
             $session->set('BlockRelationID', $this->owner->ID);
             $session->set('BlockRelationClass', $this->owner->ClassName);
@@ -63,5 +57,15 @@ class BlockPageExtension extends DataExtension
         } else {
             $fields->addFieldToTab('Root.ContentBlocks', LiteralField::create(false, 'Please save this block to start adding items<br><br>'));
         }
+    }
+
+    public function updateAnchorsOnPage(&$anchors) {
+        $block_anchors = [];
+
+        if($this->owner->hasMethod('ContentBlocks')) foreach($this->owner->ContentBlocks() as $block) {
+            $block_anchors = array_merge($block->getAnchorsInBlock(), $block_anchors);
+        }
+
+        $anchors = array_unique(array_merge($anchors, $block_anchors));
     }
 }

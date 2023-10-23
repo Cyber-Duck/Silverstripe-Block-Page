@@ -4,6 +4,7 @@ namespace CyberDuck\BlockPage\Extension;
 
 use CyberDuck\BlockPage\Model\ContentBlock;
 use SilverStripe\Control\Controller;
+use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Extension;
 use SilverStripe\Core\Injector\Injector;
 
@@ -16,7 +17,7 @@ class ContentBlockControllerExtension extends Extension
     /**
      * Handles Content Block Controller request
      *
-     * @param  HttpRequest $request
+     * @param  HTTPRequest $request
      *
      * @return Controller Current Content Block Controller
      */

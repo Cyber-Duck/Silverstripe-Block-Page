@@ -1,9 +1,9 @@
-#Form_ItemEditForm_ContentBlock_Holder {
+.cms-edit-form .block-selector.form-group {
     .form__field-holder {
-        flex: 100%;
         margin-left: 0;
         max-width: 100%;
         width: 100%;
+        flex: 1;
     }
 
     .optionset {
