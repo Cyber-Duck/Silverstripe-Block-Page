@@ -35,7 +35,7 @@
             grid-column: span 4;
         }
 
-        @media (min-width: 1600px) and (min-height: 900px) {
+        @media (min-width: 2000px) and (min-height: 1100px) {
             &:has(:checked) {
                 position: sticky;
                 top: 0;
