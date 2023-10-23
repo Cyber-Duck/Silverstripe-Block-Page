@@ -3,6 +3,7 @@
 namespace CyberDuck\BlockPage\Model;
 
 use Page;
+use SilverStripe\Admin\LeftAndMain;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\ClassInfo;
@@ -14,11 +15,13 @@ use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
 use SilverStripe\Forms\GridField\GridFieldAddNewButton;
 use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
+use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\HiddenField;
 use SilverStripe\Forms\NumericField;
 use SilverStripe\Forms\OptionsetField;
 use SilverStripe\Forms\Tab;
 use SilverStripe\Forms\TabSet;
+use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DataObjectSchema;
 use SilverStripe\ORM\FieldType\DBField;
@@ -67,8 +70,24 @@ class ContentBlock extends DataObject implements PermissionProvider
 
     private static $searchable_fields = [
         'ID',
-        'ClassName'
+        'ClassName',
+        'Title'
     ];
+
+    public function populateDefaults()
+    {
+        if(Controller::curr() instanceof LeftAndMain) {
+            $parts = [];
+
+            $page = Page::get()->byID(Controller::curr()->currentPageID());
+
+            if ($page) $parts[] = $page->Title;
+
+            $parts[] = $this->i18n_singular_name();
+
+            $this->Title = implode(' - ', $parts);
+        }
+    }
 
     public function searchableFields()
     {
@@ -95,6 +114,12 @@ class ContentBlock extends DataObject implements PermissionProvider
             'filter' => 'ExactMatchFilter',
             'title' => 'Content type',
             'field' => DropdownField::create('ClassName')->setSource($block_options)->setEmptyString('- Any -')
+        ];
+
+        $fields['Title'] = [
+            'filter' => 'PartialMatchFilter',
+            'title' => 'Title',
+            'field' => TextField::create('Title')
         ];
 
         return $fields;
@@ -139,6 +164,15 @@ class ContentBlock extends DataObject implements PermissionProvider
             $grid->getConfig()
                 ->removeComponentsByType(GridFieldAddNewButton::class);
             $fields->addFieldToTab('Root.Pages', $grid);
+            $fields->fieldByName('Root.Main')->unshift(HeaderField::create('BlockHeader', $this->owner->i18n_singular_name()));
+
+            $fields->addFieldsToTab('Root.Main', [
+                TextField::create('Title', 'Title *')
+                    ->setDescription('This field is used to identify this block in the CMS - for internal use only.'),
+                TextField::create('Identifier', 'Identifier')
+                    ->setAttribute('placeholder', $this->owner->getDefaultIdentifier())
+                    ->setDescription('This value is used to identify this block in URLs (typically anchor links). It\'s recommended to set this to ensure links to this block are recognisable.')
+            ]);
         }
         return $fields;
     }
