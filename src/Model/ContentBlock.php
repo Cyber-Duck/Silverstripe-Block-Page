@@ -74,21 +74,6 @@ class ContentBlock extends DataObject implements PermissionProvider
         'Title'
     ];
 
-    public function populateDefaults()
-    {
-        if(Controller::curr() instanceof LeftAndMain) {
-            $parts = [];
-
-            $page = Page::get()->byID(Controller::curr()->currentPageID());
-
-            if ($page) $parts[] = $page->Title;
-
-            $parts[] = $this->i18n_singular_name();
-
-            $this->Title = implode(' - ', $parts);
-        }
-    }
-
     public function searchableFields()
     {
         $fields = parent::searchableFields();
@@ -143,6 +128,25 @@ class ContentBlock extends DataObject implements PermissionProvider
         $this->extend('updatePreviewImagePath', $previewImagePath);
 
         return $previewImagePath;
+    }
+
+
+    public function onBeforeWrite()
+    {
+        if(!$this->isInDB()) {
+            $parts = [];
+            $parts[] = $this->i18n_singular_name();
+
+            if (Controller::curr() instanceof LeftAndMain) {
+                $page = Page::get()->byID(Controller::curr()->currentPageID());
+
+                if ($page) array_unshift($parts, $page->Title);
+            }
+
+            $this->Title = implode(' - ', $parts);
+        }
+
+        parent::onBeforeWrite();
     }
 
     public function getCMSFields()
