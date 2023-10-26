@@ -6,6 +6,7 @@ use CyberDuck\BlockPage\Model\ContentBlock;
 use SilverStripe\Control\Controller;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
+use SilverStripe\Forms\GridField\GridFieldFooter;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
@@ -22,26 +23,32 @@ class BlockPageExtension extends DataExtension
     private static $many_many = [
         'ContentBlocks' => ContentBlock::class
     ];
-    
+
     private static $many_many_extraFields = [
         'ContentBlocks' => [
             'SortBlock' => 'Int'
         ]
     ];
-    
+
     private static $owns = [
         'ContentBlocks'
     ];
-    
+
     public function updateCMSFields(FieldList $fields)
     {
         if ($this->owner->ID > 0) {
             $editor = GridFieldConfig_RelationEditor::create();
             $grid = new GridField('ContentBlocks', 'Content Blocks', $this->owner->ContentBlocks(), $editor);
+
+            $paginator = $grid->getConfig()->getComponentByType(GridFieldPaginator::class);
+
+            if($paginator instanceof GridFieldPaginator) {
+                $paginator->setItemsPerPage(100);
+            }
+
             $grid->getConfig()
                 ->removeComponentsByType([
                     GridFieldPageCount::class,
-                    GridFieldPaginator::class,
                     GridFieldAddExistingAutocompleter::class
                 ])
                 ->addComponents([
@@ -52,7 +59,7 @@ class BlockPageExtension extends DataExtension
             $session = Controller::curr()->getRequest()->getSession();
             $session->set('BlockRelationID', $this->owner->ID);
             $session->set('BlockRelationClass', $this->owner->ClassName);
-    
+
             $fields->addFieldToTab('Root.ContentBlocks', $grid);
         } else {
             $fields->addFieldToTab('Root.ContentBlocks', LiteralField::create(false, 'Please save this block to start adding items<br><br>'));
