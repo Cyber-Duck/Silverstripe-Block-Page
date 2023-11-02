@@ -30,6 +30,7 @@ use SilverStripe\ORM\FieldType\DBVarchar;
 use SilverStripe\Security\Permission;
 use SilverStripe\Security\PermissionProvider;
 use SilverStripe\Versioned\Versioned;
+use SilverStripe\View\Parsers\URLSegmentFilter;
 use Symbiote\GridFieldExtensions\GridFieldAddExistingSearchButton;
 
 class ContentBlock extends DataObject implements PermissionProvider
@@ -144,6 +145,12 @@ class ContentBlock extends DataObject implements PermissionProvider
             }
 
             $this->Title = implode(' - ', $parts);
+        }
+
+        $filter = URLSegmentFilter::create();
+
+        if($filter->filter($this->owner->Identifier) !== $this->owner->Identifier) {
+            $this->owner->Identifier = $filter->filter($this->owner->Identifier);
         }
 
         parent::onBeforeWrite();
